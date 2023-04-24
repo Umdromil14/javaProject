@@ -36,8 +36,20 @@ public class Utils {
         }
         return null;
     }
-    public static Boolean isValidEmail(String email)
+    public static String isValidEmail(String email)
     {
-        return email.matches("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$");
+        if (email.matches("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$"))
+        {
+            return email;
+        }
+        return null;
+    }
+    public static Integer isValidInteger(String integer)
+    {
+        if (integer.matches("[0-9]+"))
+        {
+            return Integer.parseInt(integer);
+        }
+        return null;
     }
 }

@@ -28,11 +28,11 @@ public class LoginController {
         Parent root;
         try {
             stage = (Stage) emailField.getScene().getWindow();
-        root = FXMLLoader.load(getClass().getResource("inscription.fxml"));
-        Scene scene = new Scene(root);
-        stage.setTitle("Inscription");
-        stage.setScene(scene);
-        stage.show();
+            root = FXMLLoader.load(getClass().getResource("inscription.fxml"));
+            Scene scene = new Scene(root);
+            stage.setTitle("Inscription");
+            stage.setScene(scene);
+            stage.show();
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
         }
@@ -43,14 +43,8 @@ public class LoginController {
     void login(ActionEvent event) {
         String email = emailField.getText();
         String password = passwordField.getText();
-
-        if (email.equals("admin") && password.equals("bidondon")) {
-            System.out.println("Login Successful");
-            errorText.setVisible(false);
-        } else {
-            errorText.setVisible(true);
-        }
-        System.out.println("email: " + email + " password: " + password);
+        //send to the Controller
+        System.out.println(email + " " + password);
     }
 
 }

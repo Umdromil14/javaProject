@@ -73,18 +73,10 @@ public class ConnexionController {
                 return;
             }
         }
-
         if (!informations[3].equals(informations[4])) 
         {
             wrongPassword.setVisible(true);
         }
-
-        if (!Utils.isValidEmail(informations[2]))
-        {
-            WrongMail.setVisible(true);
-        }
-
-        
 
     }
 
