@@ -44,7 +44,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ConnexionController">
+<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ModificationController">
   <children>
     <AnchorPane focusTraversable="true" maxHeight="-1.0" maxWidth="-1.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="700.0" VBox.vgrow="ALWAYS">
          <children>
@@ -82,7 +82,7 @@
                </effect>
             </Button>
             <TextField fx:id="numberField" cache="true" depthTest="DISABLE" layoutX="317.0" layoutY="314.0" prefHeight="28.0" prefWidth="66.0" promptText="Number" style="-fx-background-color: transparent; -fx-border-color: #808080; -fx-border-width: 0px 0px 2px 0px;" />
-            <Text disable="true" fontSmoothingType="LCD" layoutX="265.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Inscription" textAlignment="CENTER">
+            <Text disable="true" fontSmoothingType="LCD" layoutX="265.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Modification" textAlignment="CENTER">
                <font>
                   <Font name="Bell MT" size="38.0" />
                </font>
@@ -93,6 +93,7 @@
             <Text fx:id="wrongPassword" fill="RED" layoutX="317.0" layoutY="298.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Not the same password" underline="true" visible="false" wrappingWidth="210.0" />
             <Text fx:id="WrongMail" fill="RED" layoutX="45.0" layoutY="225.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Email not valid !" visible="false" wrappingWidth="187.13671875" />
             <Text fx:id="emptyError" fill="RED" layoutX="45.0" layoutY="459.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Some fields is empty !" underline="true" visible="false" wrappingWidth="187.13671875" />
+            <TextField fx:id="CountryField" cache="true" depthTest="DISABLE" layoutX="317.0" layoutY="423.0" prefHeight="26.0" prefWidth="210.0" promptText="Country" style="-fx-background-color: transparent; -fx-border-color: #808080; -fx-border-width: 0px 0px 2px 0px;" />
          </children>
     </AnchorPane>
   </children>

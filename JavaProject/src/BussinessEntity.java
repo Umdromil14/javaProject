@@ -1,4 +1,4 @@
-package Model;
+
 
 import javax.xml.bind.ValidationException;
 
@@ -23,7 +23,7 @@ public class BussinessEntity {
     public void seteMail(String eMail) throws ValidationException
     {
         try {
-            this.eMail = Utils.Utils.isValidEmail(eMail);
+            this.eMail = Utils.isValidEmail(eMail);
         } catch (Exception e) {
             throw new ValidationException("Invalid email");
         }

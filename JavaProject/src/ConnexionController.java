@@ -1,7 +1,6 @@
 
-package View;
 
-import Utils.Utils;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -13,6 +12,9 @@ public class ConnexionController {
 
     @FXML
     private Text emptyError;
+    
+    @FXML
+    private TextField CountryField;
 
     @FXML
     private Button ConfirmButton;
