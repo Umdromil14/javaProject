@@ -1,7 +1,5 @@
 
 
-import javax.xml.bind.ValidationException;
-
 public class BussinessEntity {
     private String firstname;
     private String lastname;
@@ -9,23 +7,34 @@ public class BussinessEntity {
     private String password;
     private Address address;
     private String repeatPassword;
+    
 
-    public BussinessEntity(String firstname, String lastname, String eMail, String password, String street,String city,String number,String postalCode , String repeatPassword) throws ValidationException 
+    public BussinessEntity(String firstname, String lastname, String eMail, String password, String street,String city,Integer number,Integer postalCode , String repeatPassword,String country)  
     {
         this.firstname = firstname;
         this.lastname = lastname;
         this.eMail = eMail;
         this.password = password;
-        this.address = new Address(street, number, city, postalCode);
+        this.address = new Address(street, number, city, postalCode,country);
         this.repeatPassword = repeatPassword;
     }
-
-    public void seteMail(String eMail) throws ValidationException
-    {
-        try {
-            this.eMail = Utils.isValidEmail(eMail);
-        } catch (Exception e) {
-            throw new ValidationException("Invalid email");
-        }
+    public Address getAddress() {
+        return address;
     }
+    public String getFirstname() {
+        return firstname;
+    }
+    public String getLastname() {
+        return lastname;
+    }
+    public String getPassword() {
+        return password;
+    }
+    public String getRepeatPassword() {
+        return repeatPassword;
+    }
+    public String geteMail() {
+        return eMail;
+    }
+
 }

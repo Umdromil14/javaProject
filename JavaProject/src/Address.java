@@ -1,43 +1,33 @@
 
 
-import javax.xml.bind.ValidationException;
-
 public class Address {
     private String street;
     private Integer number;
     private String city;
     private Integer postalCode;
+    private String country;
 
-    public Address(String street, String number, String city, String postalCode) throws ValidationException 
+    public Address(String street, Integer number, String city, Integer postalCode, String country) 
     {
         this.street = street;
-        setNumber(number);
+        this.number = number;
         this.city = city;
-        setPostalCode(postalCode);
+        this.postalCode = postalCode;
+        this.country = country;
     }
-
-    public void setNumber(String number) throws ValidationException 
-    {
-        try 
-        {
-            this.number = Integer.parseInt(number);
-        } catch (NumberFormatException e) {
-            throw new ValidationException("Invalid number");
-        }
+    public String getCity() {
+        return city;
     }
-    public void setPostalCode(String postalCode) throws ValidationException {
-        //check if the postal code is valid
-        try 
-        {
-            this.postalCode = Integer.parseInt(postalCode);
-        } catch (NumberFormatException e) {
-            throw new ValidationException("Invalid number");
-        }
-        
+    public Integer getNumber() {
+        return number;
     }
-    public void setStreet(String street) 
-    {
-        //check if the street is valid
-        this.street = street;
+    public Integer getPostalCode() {
+        return postalCode;
+    }
+    public String getStreet() {
+        return street;
+    }
+    public String getCountry() {
+        return country;
     }
 }

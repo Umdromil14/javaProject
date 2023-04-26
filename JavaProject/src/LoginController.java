@@ -1,4 +1,7 @@
 
+
+
+
 import java.io.IOException;
 
 import javafx.event.ActionEvent;
@@ -22,6 +25,7 @@ public class LoginController {
     @FXML
     private PasswordField passwordField;
 
+
     @FXML
     void createAccount(ActionEvent event) throws IOException {
         Stage stage;
@@ -41,10 +45,7 @@ public class LoginController {
 
     @FXML
     void login(ActionEvent event) {
-        String email = emailField.getText();
-        String password = passwordField.getText();
-        //send to the Controller
-        System.out.println(email + " " + password);
+
     }
 
 }

@@ -1,3 +1,4 @@
+package Utils;
 
 
 import java.security.MessageDigest;
@@ -6,9 +7,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Utils {
-    public static String hashPassword(String password, String salt) throws NoSuchAlgorithmException
+    public static String hashPassword(String password, String salt)
     {
-        MessageDigest msg = MessageDigest.getInstance("SHA-256");
+        MessageDigest msg = null;
+        try {
+            msg = MessageDigest.getInstance("SHA-256");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
         byte [] hash = msg.digest((password+salt).getBytes());
         StringBuilder s = new StringBuilder();
         for (byte b : hash) {
@@ -36,13 +42,10 @@ public class Utils {
         }
         return null;
     }
-    public static String isValidEmail(String email)
+    public static Boolean isValidEmail(String email)
     {
-        if (email.matches("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$"))
-        {
-            return email;
-        }
-        return null;
+        return email.matches("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$");
+        
     }
     public static Integer isValidInteger(String integer)
     {
