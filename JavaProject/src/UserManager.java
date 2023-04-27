@@ -1,7 +1,4 @@
-
-
 import java.sql.SQLException;
-
 import Utils.Utils;
 public class UserManager 
 {
@@ -18,15 +15,43 @@ public class UserManager
     public void addUser(BussinessEntity user)throws AddUserException, SQLException 
     {
         //check if user is valid
-        if (user.getFirstname().isEmpty() || user.getLastname().isEmpty() || user.geteMail().isEmpty() || user.getPassword().isEmpty() ||
-        user.getRepeatPassword().isEmpty()|| user.getAddress().getCity().isEmpty() || user.getAddress().getStreet().isEmpty() || user.getAddress().getNumber() == null || 
-        user.getAddress().getPostalCode() == null)
-            throw new AddUserException("Empty fields");
-        if (!Utils.isValidEmail(user.geteMail()))
-            throw new AddUserException("Invalid email");
-        if (!user.getPassword().equals(user.getRepeatPassword()))
-            throw new AddUserException("Passwords don't match");
-        System.out.println("User is valid");
+        if (!filterDataUser(user))
+            throw new AddUserException("Invalid user");
         userDBAccess.addUser(user);
+    }
+    public void connectUser(String eMail, String password) throws SQLException, ConnectUserException
+    {
+        if (eMail.isEmpty() || password.isEmpty())
+            throw new ConnectUserException("Invalid user");
+        userDBAccess.connectUser(eMail, password);
+    }
+    public Boolean filterDataUser(BussinessEntity bussinessEntity)
+    {
+        if (!isSamePassword(bussinessEntity.getPassword(), bussinessEntity.getRepeatPassword()))
+        //throw exception
+            return false;
+        if (isFieldEmpty(bussinessEntity))
+        //throw exception
+            return false;
+        if (!Utils.isValidEmail(bussinessEntity.geteMail()))
+        //throw exception
+            return false;
+        return true;
+    }
+    public Boolean isSamePassword(String password, String repeatPassword)
+    {
+        return password.equals(repeatPassword);
+    }
+    public Boolean isFieldEmpty(BussinessEntity bussinessEntity)
+    {
+        return bussinessEntity.getFirstname().isEmpty() || 
+        bussinessEntity.getLastname().isEmpty() || 
+        bussinessEntity.geteMail().isEmpty() || 
+        bussinessEntity.getPassword().isEmpty() ||
+        bussinessEntity.getRepeatPassword().isEmpty()||
+        bussinessEntity.getAddress().getCity().isEmpty() || 
+        bussinessEntity.getAddress().getStreet().isEmpty() || 
+        bussinessEntity.getAddress().getNumber() == null || 
+        bussinessEntity.getAddress().getPostalCode() == null;
     }
 }

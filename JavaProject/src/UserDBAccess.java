@@ -5,7 +5,7 @@ import Utils.Utils;
 public class UserDBAccess {
     private static final String DB_URL = "jdbc:mysql://localhost:3306/barasserie";
     private static final String USER = "root";
-    private static final String PASSWORD = "Cyr14061406";
+    private static final String PASSWORD = "root";
 
     private static final String STARTING_STATUS = "regular";
 
@@ -104,5 +104,9 @@ public class UserDBAccess {
         }
         System.out.println("User added");
         connection.close();
+    }
+
+    public void connectUser(String eMail, String password) {
+        String query = "SELECT * FROM communication WHERE eMail = ?";
     }
 }

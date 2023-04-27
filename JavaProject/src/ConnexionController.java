@@ -8,7 +8,7 @@ import javafx.scene.text.Text;
 
 public class ConnexionController 
 {
-    private ApplicationController applicationController = new ApplicationController();
+    private UserManager userManager = new UserManager();
     @FXML
     private Text emptyError;
 
@@ -54,24 +54,26 @@ public class ConnexionController
     @FXML
     void ConfirmListener(ActionEvent event) 
     {
-        String informations[] = 
-        {
-                firstnameField.getText().trim(), lastnameField.getText().trim(),
-                eMailField.getText().trim(),
-                passwordField.getText(),passwordRepeatField.getText(),
-                streetField.getText().trim(),numberField.getText().trim(),cityField.getText().trim(),PCodeField.getText().trim(),CountryField.getText().trim()
-        };
         try 
         {
-            // }
-            BussinessEntity user = new BussinessEntity(informations[0], informations[1], informations[2], informations[3],
-                informations[5], informations[7], Integer.parseInt(informations[6]), Integer.parseInt(informations[8]), informations[4], informations[9]);
-            // if the user is created successfully
-            System.out.println("User created successfully");
-            applicationController.addUser(user);
+            BussinessEntity user = new BussinessEntity
+            (
+                firstnameField.getText().trim(),
+                lastnameField.getText().trim(), 
+                eMailField.getText().trim(), 
+                passwordField.getText().trim(),
+                streetField.getText().trim(),
+                cityField.getText().trim(), 
+                Integer.parseInt(numberField.getText().trim()),
+                Integer.parseInt(PCodeField.getText().trim()),
+                passwordRepeatField.getText().trim(),
+                CountryField.getText().trim()
+            );
+            userManager.addUser(user);
     
         } catch (AddUserException | SQLException e)// and catch the error of Integer.parseInt
         {
+            e.printStackTrace();
             //catch the exception
         }
     }
