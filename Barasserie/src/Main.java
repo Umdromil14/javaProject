@@ -11,7 +11,7 @@ public class Main extends Application {
         FXMLStage.setStage(primaryStage);
 
         try {
-            FXMLStage.getInstance().load("/view/login.fxml", "User Login");
+            FXMLStage.getInstance().load("/view/adminProfile.fxml", "admin view");
         } catch (IOException e) {
             e.printStackTrace();
         }

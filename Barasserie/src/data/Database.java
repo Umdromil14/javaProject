@@ -5,32 +5,14 @@ import java.sql.*;
 import tools.*;
 
 public class Database {
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/barasserie";
-    private static final String USER = "root";
-    private static final String PASSWORD = "bidondon";
-
+   
     private static final String STARTING_STATUS = "regular";
-
-    private static Connection connection;
-
-    public static Connection getInstance() throws SQLException {
-        if (connection == null) {
-            connection = DriverManager.getConnection(DB_URL, USER, PASSWORD);
-        }
-        return connection;
-    }
-
-    public static void close() throws SQLException {
-        if (connection != null) {
-            connection.close();
-        }
-        connection = null;
-    }
+    
 
     public static int addAddress(Address address) throws SQLException {
         String query = "SELECT id FROM city WHERE name = ? AND postalCode = ? AND country = ?";
 
-        Connection connection = getInstance();
+        Connection connection = SingletonConnection.getInstance();
         PreparedStatement statement = connection.prepareStatement(query);
 
         statement.setString(1, address.getCity());
@@ -70,7 +52,7 @@ public class Database {
     public static void addEmail(int id, String email) throws SQLException {
         String query = "INSERT INTO communication (entity, type, communicationDetails) VALUES (?, ?, ?)";
 
-        Connection connection = getInstance();
+        Connection connection = SingletonConnection.getInstance();
         PreparedStatement statement = connection.prepareStatement(query);
 
         statement.setInt(1, id);
@@ -87,7 +69,7 @@ public class Database {
         "(address, tier, lastname, firstname, isClient, isSupplier, registrationDate, hashedPassword, salt) " +
         "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        Connection connection = getInstance();
+        Connection connection = SingletonConnection.getInstance();
         PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 
         statement.setInt(1, addressId);

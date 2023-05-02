@@ -1,5 +1,6 @@
 package controller;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -13,7 +14,11 @@ import exception.AddUserException;
 import tools.BussinessEntity;
 
 public class SignUpController {
-    private UserManager userManager = new UserManager();
+    private UserManager userManager;
+
+    public SignUpController() {
+        userManager = new UserManager();
+    }
 
     @FXML
     private Text emptyError;
@@ -58,7 +63,7 @@ public class SignUpController {
     private Text wrongPassword;
 
     @FXML
-    void ConfirmListener(ActionEvent event) {
+    void ConfirmListener(ActionEvent event) throws NullPointerException, IOException {
         try {
             BussinessEntity user = new BussinessEntity(
                 firstnameField.getText().trim(),
@@ -73,6 +78,8 @@ public class SignUpController {
                 CountryField.getText().trim()
             );
             userManager.addUser(user);
+            // if the user is added, then load the login page
+            FXMLStage.getInstance().load("/view/login.fxml", "User Login");
     
         } catch (AddUserException | SQLException e)// and catch the error of Integer.parseInt
         {
