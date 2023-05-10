@@ -1,5 +1,7 @@
 package tools;
 
+import javax.swing.JOptionPane;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.ResultSet;
@@ -41,5 +43,11 @@ public class Utils {
         return null;
     }
 
-    
+    public static boolean isValidEmail(String email) {
+        return email.matches("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$");
+    }
+
+    public static void popUp(String message) {
+        JOptionPane.showMessageDialog(null, message);
+    }
 }

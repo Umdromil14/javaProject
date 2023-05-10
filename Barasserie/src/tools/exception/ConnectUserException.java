@@ -1,13 +1,11 @@
-package exception;
+package tools.exception;
 
 import javax.swing.JOptionPane;
 
-public class AddUserException extends Throwable {
-
+public class ConnectUserException extends Throwable{
     private String string;
-    public AddUserException(String string) {
+    public ConnectUserException(String string) {
         this.string = string;
         JOptionPane.showMessageDialog(null, string, "Error", JOptionPane.ERROR_MESSAGE);
     }
-
 }

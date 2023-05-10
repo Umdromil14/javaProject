@@ -7,6 +7,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import tools.BusinessEntity;
 
 public class FXMLStage {
     private static final String ICON = "/picture/drakkarys.jpg";
@@ -32,6 +33,11 @@ public class FXMLStage {
         FXMLStage.stage = stage;
     }
 
+    public void loadRessources (Integer businessEntity)
+    {
+        //research in database for the businessEntity with this id
+        //stage.setUserData();
+    }
     public void load(String FXMLPath, String title) throws IOException, NullPointerException {
         if (stage == null) {
             throw new NullPointerException("Stage is null");
@@ -41,6 +47,7 @@ public class FXMLStage {
         Scene scene = new Scene(root);
         stage.getIcons().add(new Image(ICON));
         stage.setTitle(title);
+        //loadRessources(idBusinessEntity);
         stage.setResizable(false);
         stage.setScene(scene);
         stage.show();

@@ -8,19 +8,19 @@ import tools.*;
 public class DBClient implements DAODataBase {
     private static final String STARTING_STATUS = "regular";
     private static Connection connection ;
-    public void create(BussinessEntity bussinessEntity) throws SQLException {
+    public void create(BusinessEntity bussinessEntity) throws SQLException {
         connection = SingletonConnection.getInstance();
         addUser(bussinessEntity);
     }
     public void read() throws SQLException {
         //listing all the clients
         connection = SingletonConnection.getInstance();
-        ArrayList<BussinessEntity> clients = getUsers();
+        ArrayList<BusinessEntity> clients = getUsers();
         System.out.println(clients.size());
 
         System.out.println("read client");
     }
-    public void update(BussinessEntity bussinessEntity,Integer idEntity,Integer idAdress) throws SQLException {
+    public void update(BusinessEntity bussinessEntity,Integer idEntity,Integer idAdress) throws SQLException {
         connection = SingletonConnection.getInstance();
         updateAddress(bussinessEntity.getAddress(),idAdress);
         updateBussinessEntity(bussinessEntity,idEntity);
@@ -47,7 +47,7 @@ public class DBClient implements DAODataBase {
         statement.executeUpdate();
     }
     //en second
-    public void updateBussinessEntity(BussinessEntity bussinessEntity,int idEntity) throws SQLException {
+    public void updateBussinessEntity(BusinessEntity bussinessEntity,int idEntity) throws SQLException {
         String query = "UPDATE bussiness_entity SET firstname = ? , lastname = ? , hashedPassword = ? WHERE id = ?";
         PreparedStatement statement = connection.prepareStatement(query);
         statement.setString(1, bussinessEntity.getFirstname());
@@ -105,18 +105,18 @@ public class DBClient implements DAODataBase {
         statement.executeUpdate();
 
     }
-    public ArrayList<BussinessEntity> getUsers()throws SQLException
+    public ArrayList<BusinessEntity> getUsers()throws SQLException
     {
-        ArrayList<BussinessEntity> users = new ArrayList<BussinessEntity>();
-        String query = "SELECT * FROM bussiness_entity";
+        ArrayList<BusinessEntity> users = new ArrayList<BusinessEntity>();
+        String query = "SELECT * FROM business_entity";
         PreparedStatement statement = connection.prepareStatement(query);
         ResultSet rs = statement.executeQuery();
         if (rs == null) {
             throw new SQLException("No users found.");
         }
         while (rs.next()) {
-            BussinessEntity user = 
-            new BussinessEntity(
+            BusinessEntity user = 
+            new BusinessEntity(
                 rs.getInt("id"),
                 rs.getInt("address"),
                 rs.getString("firstname"),
@@ -130,11 +130,10 @@ public class DBClient implements DAODataBase {
     public int selectAddress(Address address) throws SQLException
     {
         String query = "SELECT id FROM city WHERE name = ? AND postalCode = ? AND country = ?";
-        
         PreparedStatement statement = connection.prepareStatement(query);
-        statement.setString(1, address.getCity());
-        statement.setInt(2, address.getPostalCode());
-        statement.setString(3, address.getCountry());
+        statement.setString(1, address.getCity().getName());
+        statement.setInt(2, address.getCity().getPostalCode());
+        statement.setString(3, address.getCity().getCountry());
 
         ResultSet rs = statement.executeQuery();
         rs = Utils.checkingResultSet(rs);
@@ -146,7 +145,7 @@ public class DBClient implements DAODataBase {
     }
     public int addAddress(Address address) throws SQLException {
         int cityId = selectAddress(address);
-
+        System.out.println(cityId);
         String query = "INSERT INTO address (street, number, city) VALUES (?, ?, ?)";
         PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 
@@ -180,10 +179,10 @@ public class DBClient implements DAODataBase {
 
         statement.executeUpdate();
     }
-    public void addUser(BussinessEntity bussinessEntity) throws SQLException {
+    public void addUser(BusinessEntity bussinessEntity) throws SQLException {
         int addressId = addAddress(bussinessEntity.getAddress());
 
-        String query = "INSERT INTO bussiness_entity " +
+        String query = "INSERT INTO business_entity " +
         "(address, tier, lastname, firstname, isClient, isSupplier, registrationDate, hashedPassword, salt) " +
         "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
@@ -212,6 +211,5 @@ public class DBClient implements DAODataBase {
             throw new SQLException("Creating user failed, no ID obtained.");
         }
         System.out.println("User added");
-        connection.close();
     }
 }

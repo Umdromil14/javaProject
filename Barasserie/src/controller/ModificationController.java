@@ -1,21 +1,32 @@
 package controller;
 
+import java.net.URL;
+import java.sql.SQLException;
+import java.util.ResourceBundle;
+
+import business.ModificationUser;
 import business.UserManager;
-import exception.AddUserException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
-import tools.BussinessEntity;
+import javafx.stage.Stage;
+import tools.BusinessEntity;
 
-public class ModificationController {
+public class ModificationController implements Initializable {
 
     private UserManager userManager;
+    private ModificationUser modificationUser;
     public ModificationController() {
         userManager = new UserManager();
+        modificationUser = new ModificationUser();
     }
+    
     //#region FXML
     @FXML
     private Button ConfirmButton;
@@ -24,7 +35,13 @@ public class ModificationController {
     private TextField CountryField;
 
     @FXML
-    private TextField PCodeField;
+    private ComboBox<Integer> comboBoxPC;
+
+    @FXML
+    private ComboBox<String> comboBoxCity;
+
+    @FXML
+    private ComboBox<String> comboxBoxCountry;
 
     @FXML
     private Text WrongMail;
@@ -60,10 +77,33 @@ public class ModificationController {
     private Text wrongPassword;
     //#endregion
 
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        try {
+            //send the id
+            
+            Stage stage = (Stage) streetField.getScene().getWindow();
+            //stage.setuserData(1);
+            BusinessEntity user = modificationUser.getUser(1); 
+            comboxBoxCountry.getItems().addAll(modificationUser.getCountries());
+            comboxBoxCountry.setValue(user.getAddress().getCity().getCountry());
+            comboBoxCity.setValue(user.getAddress().getCity().getName());
+            comboBoxPC.setValue(user.getAddress().getCity().getPostalCode());
+            firstnameField.setText(user.getFirstname());
+            lastnameField.setText(user.getLastname());
+            eMailField.setText(user.getEmail());
+            numberField.setText(user.getAddress().getNumber().toString());
+            streetField.setText(user.getAddress().getStreet());
+            comboBoxCity.getItems().addAll(modificationUser.getCity(user.getAddress().getCity().getCountry()));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     @FXML
     void ConfirmListener(ActionEvent event) {
         try {
-            BussinessEntity user = new BussinessEntity(
+            BusinessEntity user = new BusinessEntity(
             firstnameField.getText().trim(),
             lastnameField.getText().trim(), 
             eMailField.getText().trim(), 
@@ -71,7 +111,7 @@ public class ModificationController {
             streetField.getText().trim(),
             cityField.getText().trim(), 
             Integer.parseInt(numberField.getText().trim()),
-            Integer.parseInt(PCodeField.getText().trim()),
+            Integer.parseInt(comboxBoxCountry.getValue().toString()),
             passwordRepeatField.getText().trim(),
             CountryField.getText().trim()
             );
@@ -80,11 +120,32 @@ public class ModificationController {
         catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        catch (AddUserException e) {
+        catch (tools.exception.AddUserException e) {
             System.out.println(e.getMessage());
         }
 
     }
+      @FXML
+    void CityListener(ActionEvent event) {
+        String city = comboBoxCity.getValue();
+        comboBoxPC.getItems().clear();
+        try {
+            comboBoxPC.getItems().addAll(modificationUser.getPostalCode(city));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    @FXML
+    void countryListener(ActionEvent event) {
+        String country = comboxBoxCountry.getValue();
+        comboBoxCity.getItems().clear();
+        try {
+            comboBoxCity.getItems().addAll(modificationUser.getCity(country));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
 
 }
 

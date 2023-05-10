@@ -29,6 +29,7 @@
 -->
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.Tooltip?>
@@ -62,8 +63,6 @@
                </tooltip>
             </PasswordField>
             <TextField fx:id="streetField" cache="true" depthTest="DISABLE" layoutX="45.0" layoutY="314.0" prefHeight="26.0" prefWidth="210.0" promptText="Street" style="-fx-background-color: transparent; -fx-border-color: #808080; -fx-border-width: 0px 0px 2px 0px;" />
-            <TextField fx:id="cityField" cache="true" depthTest="DISABLE" layoutX="317.0" layoutY="373.0" prefHeight="26.0" prefWidth="210.0" promptText="City" style="-fx-background-color: transparent; -fx-border-color: #808080; -fx-border-width: 0px 0px 2px 0px;" />
-            <TextField fx:id="PCodeField" cache="true" depthTest="DISABLE" layoutX="45.0" layoutY="373.0" prefHeight="26.0" prefWidth="210.0" promptText="Postal code" style="-fx-background-color: transparent; -fx-border-color: #808080; -fx-border-width: 0px 0px 2px 0px;" />
             <ImageView fitHeight="94.0" fitWidth="103.0" layoutX="606.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../picture/drakkarys.jpg" />
@@ -89,7 +88,9 @@
             <Text fx:id="wrongPassword" fill="RED" layoutX="317.0" layoutY="298.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Not the same password" underline="true" visible="false" wrappingWidth="210.0" />
             <Text fx:id="WrongMail" fill="RED" layoutX="45.0" layoutY="225.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Email not valid !" visible="false" wrappingWidth="187.13671875" />
             <Text fx:id="emptyError" fill="RED" layoutX="45.0" layoutY="459.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Some fields is empty !" underline="true" visible="false" wrappingWidth="187.13671875" />
-            <TextField fx:id="CountryField" cache="true" depthTest="DISABLE" layoutX="317.0" layoutY="423.0" prefHeight="26.0" prefWidth="210.0" promptText="Country" style="-fx-background-color: transparent; -fx-border-color: #808080; -fx-border-width: 0px 0px 2px 0px;" />
+            <ComboBox fx:id="comboxBoxCountry" layoutX="317.0" layoutY="377.0" onAction="#countryListener" prefHeight="25.0" prefWidth="210.0" />
+            <ComboBox fx:id="comboBoxCity" layoutX="45.0" layoutY="377.0" onAction="#CityListener" prefHeight="25.0" prefWidth="210.0" />
+            <ComboBox fx:id="comboBoxPC" layoutX="45.0" layoutY="434.0" prefHeight="25.0" prefWidth="210.0" />
          </children>
     </AnchorPane>
   </children>

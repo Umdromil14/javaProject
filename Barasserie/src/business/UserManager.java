@@ -5,10 +5,9 @@ import javax.swing.JOptionPane;
 
 import data.DAODataBase;
 import data.DBClient;
-import exception.AddUserException;
 import tools.*;
 
-public class UserManager 
+public class UserManager implements UserManagerInterface
 {
     private DAODataBase dao;
     public UserManager()
@@ -16,19 +15,16 @@ public class UserManager
         dao = new DBClient();
     }
 
-    public void createUser(BussinessEntity bussinessEntity) throws SQLException, AddUserException
+    public void createUser(BusinessEntity user) throws SQLException, tools.exception.AddUserException
     {
         //all the filter to add
-        try
+        if (filterDataUser(user))
         {
-            if (filterDataUser(bussinessEntity))
-            {
-                dao.create(bussinessEntity);
-            }
+                dao.create(user);
         }
-        catch (SQLException e)
+        else
         {
-            throw new AddUserException("Error in the data");
+            throw new tools.exception.AddUserException("Error in the data");
         }
 
     }
@@ -40,7 +36,7 @@ public class UserManager
             dao.delete(id,idAdress);   
         }
     }
-    public void updateUser(BussinessEntity bussinessEntity) throws SQLException, AddUserException
+    public void updateUser(BusinessEntity bussinessEntity) throws SQLException, tools.exception.AddUserException
     {
         //all the filter to update
         try
@@ -52,37 +48,43 @@ public class UserManager
         }
         catch (SQLException e)
         {
-            throw new AddUserException("Error in the data");
+            throw new tools.exception.AddUserException("Error in the data");
         }
     }
         
-    public Boolean filterDataUser(BussinessEntity bussinessEntity) throws AddUserException
+    public Boolean filterDataUser(BusinessEntity bussinessEntity) throws tools.exception.AddUserException
     {
-        if (!isSamePassword(bussinessEntity.getPassword(), bussinessEntity.getRepeatPassword()))
-            throw new AddUserException("The passwords are not the same");
-        if (isFieldEmpty(bussinessEntity))
-            throw new AddUserException("There are empty fields");
-        if (!isValidEmail(bussinessEntity.getEmail()))
-            throw new AddUserException("The email is not valid");
-         return true;
+        return isSamePassword(bussinessEntity.getPassword(), bussinessEntity.getRepeatPassword()) && 
+        !isFieldEmpty(bussinessEntity)&& 
+        isValidEmail(bussinessEntity.getEmail());
     }
     public boolean isValidEmail(String email) {
         return email.matches("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$");
-    }   
+    }
     public Boolean isSamePassword(String password, String repeatPassword)
     {
         return password.equals(repeatPassword);
     }
-    public Boolean isFieldEmpty(BussinessEntity bussinessEntity)
+    public Boolean isFieldEmpty(BusinessEntity bussinessEntity)
     {
+        System.out.println(bussinessEntity.getFirstname());
+        System.out.println(bussinessEntity.getLastname());
+        System.out.println(bussinessEntity.getEmail());
+        System.out.println(bussinessEntity.getPassword());
+        System.out.println(bussinessEntity.getRepeatPassword());
+        System.out.println(bussinessEntity.getAddress().getCity().getName());
+        System.out.println(bussinessEntity.getAddress().getStreet());
+        System.out.println(bussinessEntity.getAddress().getNumber());
+        System.out.println(bussinessEntity.getAddress().getCity().getPostalCode());
+        
         return bussinessEntity.getFirstname().isEmpty() || 
         bussinessEntity.getLastname().isEmpty() || 
         bussinessEntity.getEmail().isEmpty() || 
         bussinessEntity.getPassword().isEmpty() ||
         bussinessEntity.getRepeatPassword().isEmpty()||
-        bussinessEntity.getAddress().getCity().isEmpty() || 
+        bussinessEntity.getAddress().getCity().getName().isEmpty() || 
         bussinessEntity.getAddress().getStreet().isEmpty() || 
         bussinessEntity.getAddress().getNumber() == null || 
-        bussinessEntity.getAddress().getPostalCode() == null;
+        bussinessEntity.getAddress().getCity().getPostalCode() == null;
     }
 }

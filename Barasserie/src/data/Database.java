@@ -15,9 +15,9 @@ public class Database {
         Connection connection = SingletonConnection.getInstance();
         PreparedStatement statement = connection.prepareStatement(query);
 
-        statement.setString(1, address.getCity());
-        statement.setInt(2, address.getPostalCode());
-        statement.setString(3, address.getCountry());
+        statement.setString(1, address.getCity().getName());
+        statement.setInt(2, address.getCity().getPostalCode());
+        statement.setString(3, address.getCity().getCountry());
 
         ResultSet rs = statement.executeQuery();
         rs = Utils.checkingResultSet(rs);
@@ -65,7 +65,7 @@ public class Database {
     public static void addUser(String firstname, String lastname, String email, String password, Address address) throws SQLException {
         int addressId = addAddress(address);
 
-        String query = "INSERT INTO bussiness_entity " +
+        String query = "INSERT INTO business_entity " +
         "(address, tier, lastname, firstname, isClient, isSupplier, registrationDate, hashedPassword, salt) " +
         "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
