@@ -87,7 +87,10 @@ public class AdminController implements Initializable {
     private TextArea description;
 
     @FXML
-    private DatePicker parameterDate;
+    private DatePicker parameterStartingDate;
+
+    @FXML
+    private DatePicker parameterEndingDate;
 
     @FXML
     private ComboBox<String> parameterComboBox;
@@ -261,9 +264,15 @@ public class AdminController implements Initializable {
 
     @FXML
     void researchInvoice(ActionEvent event) {
-        LocalDate date = parameterDate.getValue();
-        if (date == null) {
-            Utils.popUp("Please select a date");
+        LocalDate startingDate = parameterStartingDate.getValue();
+        if (startingDate == null) {
+            Utils.popUp("Please select a starting date");
+            return;
+        }
+
+        LocalDate endingDate = parameterEndingDate.getValue();
+        if (endingDate == null) {
+            Utils.popUp("Please select an ending date");
             return;
         }
 
