@@ -33,6 +33,6 @@ public class Utils {
     }
 
     public static void popUp(String message) {
-        JOptionPane.showMessageDialog(null, message);
+        JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.WARNING_MESSAGE);
     }
 }
