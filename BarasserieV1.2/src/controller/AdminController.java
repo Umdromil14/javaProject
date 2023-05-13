@@ -256,7 +256,21 @@ public class AdminController implements Initializable {
         }
     }
 
-    public void validateInput(int id) throws InvalidInputException {
+    private void validateNotNullInput() throws InvalidInputException {
+        if (parameterStartingDate.getValue() == null) {
+            throw new InvalidInputException("Please select a starting date");
+        }
+
+        if (parameterEndingDate.getValue() == null) {
+            throw new InvalidInputException("Please select an ending date");
+        }
+
+        if (parameterComboBox.getValue() == null) {
+            throw new InvalidInputException("Please select a document status");
+        }
+    }
+
+    private void validateIdInput(int id) throws InvalidInputException {
         if (id < 0) {
             throw new InvalidInputException("The ID must be a positive integer");
         }
@@ -264,21 +278,10 @@ public class AdminController implements Initializable {
 
     @FXML
     void researchInvoice(ActionEvent event) {
-        LocalDate startingDate = parameterStartingDate.getValue();
-        if (startingDate == null) {
-            Utils.popUp("Please select a starting date");
-            return;
-        }
-
-        LocalDate endingDate = parameterEndingDate.getValue();
-        if (endingDate == null) {
-            Utils.popUp("Please select an ending date");
-            return;
-        }
-
-        String status = parameterComboBox.getValue();
-        if (status == null) {
-            Utils.popUp("Please select a document status");
+        try {
+            validateNotNullInput();
+        } catch (InvalidInputException e) {
+            Utils.popUp(e.getMessage());
             return;
         }
 
@@ -286,7 +289,7 @@ public class AdminController implements Initializable {
         if (!clientId.isEmpty()) {
             try {
                 int id = Integer.parseInt(clientId);
-                validateInput(id);
+                validateIdInput(id);
             } catch (NumberFormatException | InvalidInputException e) {
                 Utils.popUp("The client ID must be a positive integer");
                 return;
