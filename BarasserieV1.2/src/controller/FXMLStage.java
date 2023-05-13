@@ -49,4 +49,18 @@ public class FXMLStage {
         stage.setScene(scene);
         stage.show();
     }
+    public void load (String FXMLPath, String title, Integer User) throws IOException, NullPointerException {
+        if (stage == null) {
+            throw new NullPointerException("Stage is null");
+        }
+        
+        Parent root = FXMLLoader.load(getClass().getResource(FXMLPath));
+        Scene scene = new Scene(root);
+        stage.getIcons().add(new Image(ICON));
+        stage.setTitle(title);
+        stage.setUserData(User);
+        stage.setResizable(false);
+        stage.setScene(scene);
+        stage.show();
+    }
 }

@@ -14,7 +14,7 @@ public enum Execution {
     INVOICE(
         "Return all the invoices according to the given parameters",
         new String[] {"Client ID (optional)", "City ID", "Status"},
-        new String[] {"invoiceID", "date", "status", "product", "quantity"}
+        new String[] {"firstname", "totalPrice", "invoice number", "creation date", "type"}
     ),
     READ_USER(
         "Return user information",

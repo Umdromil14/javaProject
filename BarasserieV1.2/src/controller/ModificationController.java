@@ -9,13 +9,11 @@ import business.UserManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 import tools.DBOutput.User;
 
 public class ModificationController implements Initializable {
@@ -81,9 +79,7 @@ public class ModificationController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         try {
             //send the id
-            
-            Stage stage = (Stage) streetField.getScene().getWindow();
-            //stage.setuserData(1);
+
             User user = modificationUser.getUser(1); 
             comboxBoxCountry.getItems().addAll(modificationUser.getCountries());
             comboxBoxCountry.setValue(user.getAddress().getCity().getCountry());

@@ -8,7 +8,6 @@ import data.DAODataBase;
 import data.DBClient;
 import data.UserDBAccess;
 import interfaces.UserDataAccess;
-import tools.*;
 import tools.DBOutput.TopProductClient;
 import tools.DBOutput.User;
 

@@ -8,9 +8,10 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
+import java.io.IOException;
 import java.net.URL;
+import java.sql.Date;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -27,13 +28,14 @@ public class AdminController implements Initializable {
     private CityManager cityManager;
     private UserManager userManager;
     private DocStatusManager docStatusManager;
+    private InvoiceManager invoiceManager;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         cityManager = new CityManager();
         userManager = new UserManager();
         docStatusManager = new DocStatusManager();
-
+        invoiceManager = new InvoiceManager();
         setButtons();
         setComboBox();
     }
@@ -168,12 +170,49 @@ public class AdminController implements Initializable {
 
     @FXML
     void update(ActionEvent event) {
-
+        int id = getSelectedId();
+        if (id == -1) {
+            Utils.popUp("Please select a row");
+            return;
+        }
+        try {
+            User user = userManager.getUser(id);
+            if (user.isEmpty()) {
+                Utils.popUp("No user found for this id");
+            } else {
+                //search the user & load the update user view with it 
+                //surchage méthode ?
+                FXMLStage.getInstance().load("/view/modificationUser.fxml", "Update user",id);
+            }
+        }
+        catch(NullPointerException |IOException|SQLException e) {
+            Utils.popUp("An error occured while trying to access the database");
+            e.printStackTrace();
+        }
+        
     }
 
     @FXML
     void delete(ActionEvent event) {
-
+        int id = getSelectedId();
+        if (id == -1) {
+            Utils.popUp("Please select a row");
+            return;
+        }
+        try {
+            User user = userManager.getUser(id);
+            if (user.isEmpty()) {
+                Utils.popUp("No user found for this id");
+            } else {
+                //need to change the methode to delete user
+                //userManager.deleteUser(user);
+                Utils.popUp("User deleted");
+            }
+        }
+        catch(NullPointerException |SQLException e) {
+            Utils.popUp("An error occured while trying to access the database");
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -276,29 +315,54 @@ public class AdminController implements Initializable {
         }
     }
 
+
     @FXML
     void researchInvoice(ActionEvent event) {
+        List<Invoice> invoices = new ArrayList<>();
+        List <TableEntry> tableEntries = new ArrayList<>();
         try {
             validateNotNullInput();
         } catch (InvalidInputException e) {
             Utils.popUp(e.getMessage());
             return;
         }
-
+        Integer id;
         String clientId = parameterText.getText().trim();
+        Date start = Date.valueOf(parameterStartingDate.getValue());
+        Date end = Date.valueOf(parameterEndingDate.getValue());
+        String status = parameterComboBox.getValue();
         if (!clientId.isEmpty()) {
             try {
-                int id = Integer.parseInt(clientId);
+                id = Integer.parseInt(clientId);
                 validateIdInput(id);
+                
             } catch (NumberFormatException | InvalidInputException e) {
                 Utils.popUp("The client ID must be a positive integer");
                 return;
             }
 
-            // continuer ici si on veut faire la recherche par client
+            try {
+                // continuer ici si on veut faire la recherche par client
+                invoices = invoiceManager.getInvoices(id, start, end, status);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }          
         } else {
-            // continuer ici si on veut faire la recherche par date et status
+
+            try {
+                // continuer ici si on veut faire la recherche par date et status
+                invoices = invoiceManager.getInvoices(null ,start, end, status);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
+        for (Invoice invoice : invoices) {
+            tableEntries.add(invoice.toTableEntry());
+        }
+        setTableItems(FXCollections.observableArrayList(tableEntries));
+        setColumnsNames(Execution.INVOICE.getOutputs());
+        setButtons();
+        currentExecution = Execution.INVOICE;
     }
 
     private void setColumnsNames(String... columnNames) {
