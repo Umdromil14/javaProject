@@ -60,7 +60,6 @@
           <items>
             <MenuItem mnemonicParsing="false" onAction="#researchUsers" text="User" />
                   <MenuItem mnemonicParsing="false" onAction="#researchCities" text="City" />
-            <MenuItem mnemonicParsing="false" onAction="#researchInvoice" text="Invoice" />
           </items>
         </Menu>
       </menus>
@@ -102,18 +101,18 @@
                               </AnchorPane>
                               <AnchorPane id="anchorPane4" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                                  <children>
-                                    <TextArea id="textArea1" fx:id="description" editable="false" layoutY="116.0" prefHeight="132.0" prefWidth="479.0" styleClass="descriptionValue" wrapText="true" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="116.0" />
-                                    <Label id="label2" layoutX="20.0" layoutY="92.0" text="DESCRIPTION:" />
-                                    <HBox id="HBox" alignment="CENTER" layoutX="20.0" layoutY="65.0" prefHeight="22.0" prefWidth="558.0" spacing="5.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
+                                    <TextArea id="textArea1" fx:id="description" editable="false" layoutY="132.0" prefHeight="116.0" prefWidth="478.0" styleClass="descriptionValue" wrapText="true" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="132.0" />
+                                    <Label id="label2" layoutX="21.0" layoutY="115.0" text="DESCRIPTION" />
+                                    <HBox id="HBox" alignment="CENTER" layoutX="20.0" layoutY="74.0" prefHeight="22.0" prefWidth="558.0" spacing="5.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
                                        <children>
-                                          <TextField id="textField1" fx:id="parameterText" disable="true" prefHeight="26.0" prefWidth="69.0" HBox.hgrow="ALWAYS" />
-                                          <DatePicker fx:id="parameterDate" disable="true" editable="false" prefHeight="25.0" prefWidth="111.0" promptText="Date" />
-                                          <ComboBox fx:id="parameterComboBox" disable="true" prefHeight="26.0" prefWidth="80.0" promptText="Status" />
-                                          <Button fx:id="researchButton" disable="true" mnemonicParsing="false" onAction="#execute" text="Execute" />
+                                          <TextField id="textField1" fx:id="parameterText" prefHeight="25.0" prefWidth="77.0" promptText="Client ID (optionnal)" HBox.hgrow="ALWAYS" />
+                                          <DatePicker fx:id="parameterStartingDate" editable="false" prefHeight="25.0" prefWidth="87.0" promptText="Begin" />
+                                          <DatePicker fx:id="parameterEndingDate" editable="false" prefHeight="25.0" prefWidth="87.0" promptText="End" />
+                                          <ComboBox fx:id="parameterComboBox" prefHeight="26.0" prefWidth="80.0" promptText="Status" />
+                                          <Button fx:id="researchButton" mnemonicParsing="false" onAction="#researchInvoice" text="Research" />
                                        </children>
                                     </HBox>
-                                    <Text fx:id="errorText" fill="RED" layoutX="100.0" layoutY="61.0" strokeType="OUTSIDE" strokeWidth="0.0" text="no error" textAlignment="RIGHT" visible="false" wrappingWidth="397.931640625" />
-                                    <HBox id="HBox" alignment="CENTER" layoutX="20.0" layoutY="14.0" prefHeight="26.0" prefWidth="479.0" spacing="5.0">
+                                    <HBox id="HBox" alignment="CENTER" layoutX="21.0" layoutY="14.0" prefHeight="26.0" prefWidth="479.0" spacing="5.0">
                                        <children>
                                           <Button fx:id="createButton" disable="true" mnemonicParsing="false" onAction="#create" text="Create" />
                                           <Button fx:id="readButton" disable="true" mnemonicParsing="false" onAction="#read" text="Read" />
@@ -122,7 +121,7 @@
                                           <Button fx:id="topProductButton" disable="true" mnemonicParsing="false" onAction="#researchTopProduct" text="Top Product" />
                                        </children>
                                     </HBox>
-                                    <Label id="label4" layoutX="20.0" layoutY="39.0" minWidth="-Infinity" text="RESEARCH INVOICE" />
+                                    <Label id="label4" layoutX="21.0" layoutY="57.0" minWidth="-Infinity" text="RESEARCH INVOICE" />
                                  </children>
                               </AnchorPane>
                            </items>
