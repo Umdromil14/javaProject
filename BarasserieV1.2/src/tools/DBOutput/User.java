@@ -5,20 +5,49 @@ import interfaces.tableEntryCreator;
 import tools.Address;
 
 public class User implements tableEntryCreator {
-    private int id;
+    private Integer id;
     private String firstname;
     private String lastname;
     private String email;
     private String password;
+    private String repeatPassword;
+    private String salt;
     private Address address;
     private boolean isEmpty;
+    private Integer idAddress;
 
     public User() {
         this.isEmpty = true;
     }
 
+    public User(String firstname, String lastname, String eMail, String password, String street,String city,Integer number,Integer postalCode , String repeatPassword,String country)  
+    {
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.email = eMail;
+        this.password = password;
+        this.address = new Address(street, number, city, postalCode,country);
+        this.repeatPassword = repeatPassword;
+    }
+    public User(Integer id ,Integer address,String firstname, String lastname, String password,String salt)  
+    {
+        this.id = id;
+        this.idAddress = address;
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.password = password;
+        this.salt = salt;
+    }
+    public User(String firstname, String lastname, String eMail, String password,String repeatPassword, String street,String city, int number, int postalCode, String country) {
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.email = eMail;
+        this.repeatPassword = repeatPassword;
+        this.password = password;
+        this.address = new Address(street, number, city, postalCode,country);
+    }
     public void setUser(
-        int id,
+        Integer id,
         String firstname,
         String lastname,
         String email,
@@ -38,7 +67,7 @@ public class User implements tableEntryCreator {
         this.isEmpty = false;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -78,5 +107,29 @@ public class User implements tableEntryCreator {
             address.getCity().getName(),
             address.getCity().getCountry()
         );
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
+    }
+
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
+
+    public void seteMail(String email) {
+        this.email = email;
+    }
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public String getRepeatPassword() {
+        return repeatPassword;
     }
 }

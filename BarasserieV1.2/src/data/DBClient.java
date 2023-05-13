@@ -4,23 +4,28 @@ import java.util.ArrayList;
 
 
 import tools.*;
+import tools.DBOutput.User;
 
 public class DBClient implements DAODataBase {
-    private static final String STARTING_STATUS = "regular";
     private static Connection connection ;
-    public void create(BusinessEntity bussinessEntity) throws SQLException {
+    private UserDBAccess userDBAccess;
+    public DBClient() {
+        userDBAccess = new UserDBAccess();
+    }
+    public void create(User bussinessEntity) throws SQLException {
         connection = SingletonConnection.getInstance();
-        addUser(bussinessEntity);
+       
+        userDBAccess.addUser(bussinessEntity);
     }
     public void read() throws SQLException {
         //listing all the clients
         connection = SingletonConnection.getInstance();
-        ArrayList<BusinessEntity> clients = getUsers();
+        ArrayList<User> clients = getUsers();
         System.out.println(clients.size());
 
         System.out.println("read client");
     }
-    public void update(BusinessEntity bussinessEntity,Integer idEntity,Integer idAdress) throws SQLException {
+    public void update(User bussinessEntity,Integer idEntity,Integer idAdress) throws SQLException {
         connection = SingletonConnection.getInstance();
         updateAddress(bussinessEntity.getAddress(),idAdress);
         updateBussinessEntity(bussinessEntity,idEntity);
@@ -47,7 +52,7 @@ public class DBClient implements DAODataBase {
         statement.executeUpdate();
     }
     //en second
-    public void updateBussinessEntity(BusinessEntity bussinessEntity,int idEntity) throws SQLException {
+    public void updateBussinessEntity(User bussinessEntity,int idEntity) throws SQLException {
         String query = "UPDATE bussiness_entity SET firstname = ? , lastname = ? , hashedPassword = ? WHERE id = ?";
         PreparedStatement statement = connection.prepareStatement(query);
         statement.setString(1, bussinessEntity.getFirstname());
@@ -105,9 +110,9 @@ public class DBClient implements DAODataBase {
         statement.executeUpdate();
 
     }
-    public ArrayList<BusinessEntity> getUsers()throws SQLException
+    public ArrayList<User> getUsers()throws SQLException
     {
-        ArrayList<BusinessEntity> users = new ArrayList<BusinessEntity>();
+        ArrayList<User> users = new ArrayList<User>();
         String query = "SELECT * FROM business_entity";
         PreparedStatement statement = connection.prepareStatement(query);
         ResultSet rs = statement.executeQuery();
@@ -115,8 +120,8 @@ public class DBClient implements DAODataBase {
             throw new SQLException("No users found.");
         }
         while (rs.next()) {
-            BusinessEntity user = 
-            new BusinessEntity(
+            User user = 
+            new User(
                 rs.getInt("id"),
                 rs.getInt("address"),
                 rs.getString("firstname"),
@@ -126,5 +131,20 @@ public class DBClient implements DAODataBase {
             users.add(user);
         }
         return users;
+    }
+    public Integer selectAddress(Address address) throws SQLException
+    {
+        Integer cityId = null;
+        String query = "SELECT id FROM city WHERE name = ? AND postalCode = ? AND country = ?";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, address.getCity().getName());
+        statement.setInt(2, address.getCity().getPostalCode());
+        statement.setString(3, address.getCity().getCountry());
+
+        ResultSet rs = statement.executeQuery();
+        while (rs.next()) {
+            cityId = rs.getInt("id");
+        }
+        return cityId;
     }
 }

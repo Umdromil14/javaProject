@@ -4,7 +4,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import data.GetComboBoxValues;
-import tools.BusinessEntity;
+import tools.DBOutput.User;
 
 public class ModificationUser {
 
@@ -25,7 +25,7 @@ public class ModificationUser {
         return getComboBoxValues.getCity(country);
     }
 
-    public BusinessEntity getUser(int id) throws SQLException {
+    public User getUser(int id) throws SQLException {
         
         return getComboBoxValues.getUser(id);
     }

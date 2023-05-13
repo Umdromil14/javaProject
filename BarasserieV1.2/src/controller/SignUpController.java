@@ -16,7 +16,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import business.ModificationUser;
 import business.UserManager;
-import tools.BusinessEntity;
+import tools.DBOutput.User;
 
 public class SignUpController implements Initializable {
     private UserManager userManager;
@@ -91,7 +91,7 @@ public class SignUpController implements Initializable {
     @FXML
     public void ConfirmListener(ActionEvent event) throws NullPointerException, IOException {
         try {
-            BusinessEntity user = new BusinessEntity(
+            User user = new User(
                 firstnameField.getText().trim(),
                 lastnameField.getText().trim(), 
                 eMailField.getText().trim(), 
@@ -107,7 +107,7 @@ public class SignUpController implements Initializable {
             //send a message (user created)
             FXMLStage.getInstance().load("/view/adminProfile.fxml", "admin view");
     
-        } catch (tools.exception.AddUserException | SQLException e)// and catch the error of Integer.parseInt
+        } catch (SQLException e)// and catch the error of Integer.parseInt
         {
             e.printStackTrace();
             //catch the exception

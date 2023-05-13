@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
+import data.DAODataBase;
+import data.DBClient;
 import data.UserDBAccess;
 import interfaces.UserDataAccess;
 import tools.*;
@@ -11,13 +13,15 @@ import tools.DBOutput.TopProductClient;
 import tools.DBOutput.User;
 
 public class UserManager {
-    private UserDataAccess dao;
+    private DAODataBase dao;
+    private UserDataAccess userDBAccess;
 
     public UserManager() {
-        dao = new UserDBAccess();
+        dao = new DBClient();
+        userDBAccess = new UserDBAccess();
     }
 
-    public void createUser(BusinessEntity user) throws SQLException, tools.exception.AddUserException
+    public void createUser(User user) throws SQLException
     {
         //all the filter to add
         if (filterDataUser(user))
@@ -26,7 +30,7 @@ public class UserManager {
         }
         else
         {
-            throw new tools.exception.AddUserException("Error in the data");
+            throw new SQLException("Invalid data");
         }
 
     }
@@ -38,7 +42,7 @@ public class UserManager {
             dao.delete(id,idAdress);   
         }
     }
-    public void updateUser(BusinessEntity bussinessEntity) throws SQLException, tools.exception.AddUserException
+    public void updateUser(User bussinessEntity) throws SQLException
     {
         //all the filter to update
         try
@@ -50,11 +54,11 @@ public class UserManager {
         }
         catch (SQLException e)
         {
-            throw new tools.exception.AddUserException("Error in the data");
+            throw new SQLException(e.getMessage());
         }
     }
         
-    public Boolean filterDataUser(BusinessEntity bussinessEntity) throws tools.exception.AddUserException
+    public Boolean filterDataUser(User bussinessEntity)
     {
         return isSamePassword(bussinessEntity.getPassword(), bussinessEntity.getRepeatPassword()) && 
         !isFieldEmpty(bussinessEntity)&& 
@@ -67,7 +71,7 @@ public class UserManager {
     {
         return password.equals(repeatPassword);
     }
-    public Boolean isFieldEmpty(BusinessEntity bussinessEntity)
+    public Boolean isFieldEmpty(User bussinessEntity)
     {
         
         return bussinessEntity.getFirstname().isEmpty() || 
@@ -82,14 +86,14 @@ public class UserManager {
     }
 
     public TopProductClient getTopProduct(int userId) throws SQLException {
-        return dao.getTopProduct(userId);
+        return userDBAccess.getTopProduct(userId);
     }
 
     public User getUser(int userId) throws SQLException {
-        return dao.getUser(userId);
+        return userDBAccess.getUser(userId);
     }
 
     public List<User> getAllUsers() throws SQLException {
-        return dao.getAllUsers();
+        return userDBAccess.getAllUsers();
     }
 }

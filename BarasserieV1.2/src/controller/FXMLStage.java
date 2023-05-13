@@ -31,8 +31,8 @@ public class FXMLStage {
         FXMLStage.stage = stage;
     }
 
-    public void loadRessources (Integer businessEntity) {
-        //research in database for the businessEntity with this id
+    public void loadRessources (Integer User) {
+        //research in database for the User with this id
         //stage.setUserData();
     }
 

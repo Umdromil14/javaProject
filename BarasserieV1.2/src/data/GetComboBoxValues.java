@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import tools.Address;
-import tools.BusinessEntity;
+import tools.DBOutput.User;
 
 public class GetComboBoxValues implements GetComboBoxValuesInterface {
 
@@ -66,9 +66,9 @@ public class GetComboBoxValues implements GetComboBoxValuesInterface {
     }
 
     @Override
-    public BusinessEntity getUser(int id) throws SQLException {
+    public User getUser(int id) throws SQLException {
         Connection connection = SingletonConnection.getInstance();
-        BusinessEntity user = null;
+        User user = null;
 
         StringBuilder query = new StringBuilder().
         append("SELECT * From business_entity ")
@@ -82,7 +82,7 @@ public class GetComboBoxValues implements GetComboBoxValuesInterface {
             statement.setInt(1,id);
             try (ResultSet rs = statement.executeQuery()) {
                 rs.next();
-                user = new BusinessEntity();
+                user = new User();
                 user.setAddress(
                     new Address(
                         rs.getString("street"), 
