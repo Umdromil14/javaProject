@@ -4,13 +4,16 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.text.Text;
 
+import java.net.URL;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import business.*;
 import tools.Utils;
@@ -18,9 +21,22 @@ import tools.DBOutput.*;
 import tools.enumeration.Execution;
 import tools.exception.InvalidInputException;
 
-public class AdminController {
-    // rajouter constructeurs
+public class AdminController implements Initializable {
     private static Execution currentExecution;
+    
+    private CityManager cityManager;
+    private UserManager userManager;
+    private DocStatusManager docStatusManager;
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        cityManager = new CityManager();
+        userManager = new UserManager();
+        docStatusManager = new DocStatusManager();
+
+        setButtons();
+        setComboBox();
+    }
 
     @FXML
     private TableColumn<TableEntry, String> column1;
@@ -68,9 +84,6 @@ public class AdminController {
     private Button topProductButton;
 
     @FXML
-    private Text errorText;
-
-    @FXML
     private TextArea description;
 
     @FXML
@@ -88,6 +101,16 @@ public class AdminController {
     @FXML
     private TableView<TableEntry> table;
 
+    private void setComboBox() {
+        try {
+            List<String> docStatus = docStatusManager.getAllDocStatus();
+
+            parameterComboBox.setItems(FXCollections.observableArrayList(docStatus));
+        } catch (SQLException e) {
+            Utils.popUp("An error occurred while getting the document status");
+        }
+    }
+
     private void setButtons() {
         setButtons(true, true, true, true, true);
     }
@@ -98,6 +121,15 @@ public class AdminController {
         updateButton.setDisable(isUpdateDisabled);
         deleteButton.setDisable(isDeleteDisabled);
         topProductButton.setDisable(isTopProductDisabled);
+    }
+
+    private int getSelectedId() {
+        TableEntry row = table.getSelectionModel().getSelectedItem();
+        if (row == null) {
+            return -1;
+        }
+
+        return Integer.parseInt(row.getColumn1());
     }
 
     @FXML
@@ -112,14 +144,13 @@ public class AdminController {
     @FXML
     void read(ActionEvent event) {
         int id = getSelectedId();
-
         if (id == -1) {
             Utils.popUp("Please select a row");
             return;
         }
 
         try {
-            User user = new UserManager().getUser(id);
+            User user = userManager.getUser(id);
 
             if (user.isEmpty()) {
                 Utils.popUp("No user found for this id");
@@ -134,22 +165,58 @@ public class AdminController {
 
     @FXML
     void update(ActionEvent event) {
-        currentExecution = Execution.UPDATE_USER;
 
-        setFields(currentExecution);
     }
 
     @FXML
     void delete(ActionEvent event) {
-        currentExecution = Execution.DELETE_USER;
 
-        setFields(currentExecution);
+    }
+
+    @FXML
+    void researchTopProduct(ActionEvent event) {
+        int id = getSelectedId();
+        if (id == -1) {
+            Utils.popUp("Please select a row");
+            return;
+        }
+
+        try {
+            switch(currentExecution) {
+                case TOP_PRODUCT_CITY:
+                    TopProductCity topProductCity = cityManager.getTopProduct(id);
+        
+                    if (topProductCity.isEmpty()) {
+                        Utils.popUp("No product found for this city");
+                    } else {
+                        setTableItems(FXCollections.observableArrayList(topProductCity.toTableEntry()));
+                        setColumnsNames(currentExecution.getOutputs());
+                        setButtons();
+                    }
+                    break;
+                case TOP_PRODUCT_CLIENT:
+                    TopProductClient topProductClient = userManager.getTopProduct(id);
+
+                    if (topProductClient.isEmpty()) {
+                        Utils.popUp("No product found for this user");
+                    } else {
+                        setTableItems(FXCollections.observableArrayList(topProductClient.toTableEntry()));
+                        setColumnsNames(currentExecution.getOutputs());
+                        setButtons();
+                    }
+                    break;
+                default:
+                    break;
+            }
+        } catch(SQLException e) {
+            Utils.popUp("An error occured while trying to access the database");
+        }
     }
 
     @FXML
     void researchCities(ActionEvent event) {
         try {
-            List<City> cities = new CityManager().getAllCities();
+            List<City> cities = cityManager.getAllCities();
             List<TableEntry> tableEntries = new ArrayList<>();
 
             for (City city : cities) {
@@ -163,14 +230,13 @@ public class AdminController {
             currentExecution = Execution.TOP_PRODUCT_CITY;
         } catch (SQLException e) {
             Utils.popUp("An error occured while trying to access the database");
-            e.printStackTrace();
         }
     }
 
     @FXML
     void researchUsers(ActionEvent event) throws SQLException {
         try {
-            List<User> users = new UserManager().getAllUsers();
+            List<User> users = userManager.getAllUsers();
             List<TableEntry> tableEntries = new ArrayList<>();
 
             for (User user : users) {
@@ -187,64 +253,39 @@ public class AdminController {
         }
     }
 
-    @FXML
-    void execute(ActionEvent event) {
-    //     ResearchManager manager = new ResearchManager();
-
-    //     try {
-    //         int id = Integer.parseInt(parameterText.getText());
-    //         validateInput(id);
-
-    //         switch(currentExecution) {
-    //             case TOP_PRODUCT_CITY:
-    //                 TopProductCity topProductCity = new CityManager().getTopProduct(id);
-
-    //                 if (topProductCity.isEmpty()) {
-    //                     Utils.popUp("No product found for this city");
-    //                 } else {
-    //                     addTableItems(FXCollections.observableArrayList(topProductCity.toTableEntry()));
-    //                     setColumnsNames(currentExecution.getOutputs());
-    //                 }
-    //                 break;
-    //             case TOP_PRODUCT_CLIENT:
-    //                 TopProductClient topProductClient = manager.getTopProductByClient(id);
-
-    //                 if (topProductClient.isEmpty()) {
-    //                     Utils.popUp("No product found for this client");
-    //                 } else {
-    //                     addTableItems(FXCollections.observableArrayList(topProductClient.toTableEntry()));
-    //                     setColumnsNames(currentExecution.getOutputs());
-    //                 }
-    //                 break;
-    //             case INVOICE:
-    //                 // addTableItems(FXCollections.observableArrayList(manager.getInvoicesByClientId(id)));
-    //                 // setColumnsNames("invoiceID", "date", "status", "product", "quantity");
-    //                 break;
-    //             case READ_USER:
-    //                 // addTableItems(FXCollections.observableArrayList(manager.getUserById(id)));
-    //                 // setColumnsNames("ID", "firstname", "lastname", "email", "street", "number", "postal", "city", "country");
-    //                 break;
-    //             case UPDATE_USER:
-    //                 // addTableItems(FXCollections.observableArrayList(manager.getUserById(id)));
-    //                 // setColumnsNames("ID", "firstname", "lastname", "email", "street", "number", "postal", "city", "country");
-    //                 break;
-    //             case DELETE_USER:
-    //                 // addTableItems(FXCollections.observableArrayList(manager.getUserById(id)));
-    //                 // setColumnsNames("ID", "firstname", "lastname", "email", "street", "number", "postal", "city", "country");
-    //                 break;
-    //         }
-
-    //     } catch (NumberFormatException | InvalidInputException e) {
-    //         errorText.setText("The ID must be a positive integer");
-    //         errorText.setVisible(true);
-    //     } catch (SQLException e) {
-    //         Utils.popUp("An error occured while trying to access the database");
-    //     }
-    }
-
     public void validateInput(int id) throws InvalidInputException {
         if (id < 0) {
             throw new InvalidInputException("The ID must be a positive integer");
+        }
+    }
+
+    @FXML
+    void researchInvoice(ActionEvent event) {
+        LocalDate date = parameterDate.getValue();
+        if (date == null) {
+            Utils.popUp("Please select a date");
+            return;
+        }
+
+        String status = parameterComboBox.getValue();
+        if (status == null) {
+            Utils.popUp("Please select a document status");
+            return;
+        }
+
+        String clientId = parameterText.getText().trim();
+        if (!clientId.isEmpty()) {
+            try {
+                int id = Integer.parseInt(clientId);
+                validateInput(id);
+            } catch (NumberFormatException | InvalidInputException e) {
+                Utils.popUp("The client ID must be a positive integer");
+                return;
+            }
+
+            // continuer ici si on veut faire la recherche par client
+        } else {
+            // continuer ici si on veut faire la recherche par date et status
         }
     }
 
@@ -274,95 +315,5 @@ public class AdminController {
         column10.setCellValueFactory(new PropertyValueFactory<TableEntry, String>("column10"));
 
         table.setItems(items);
-    }
-
-    @FXML
-    void researchInvoice(ActionEvent event) {
-        try {
-            List<String> docStatus = new DocStatusManager().getAllDocStatus();
-
-            parameterComboBox.setItems(FXCollections.observableArrayList(docStatus));
-
-            currentExecution = Execution.INVOICE;
-
-            parameterText.setPromptText("Client ID (optional)");
-            parameterText.setDisable(false);
-            parameterDate.setDisable(false);
-            parameterComboBox.setDisable(false);
-            researchButton.setDisable(false);
-            description.setText(currentExecution.getDescription());
-        } catch (SQLException e) {
-            Utils.popUp("An error occured while trying to access the database");
-        }
-    }
-
-    private void setFields(Execution execution) {
-        String[] parameters = execution.getInputs();
-
-        initializeFields();
-
-        parameterText.setPromptText(parameters.length > 0 ? parameters[0] : null);
-        parameterText.setDisable(1 > parameters.length);
-        parameterDate.setDisable(2 > parameters.length);
-        parameterComboBox.setDisable(3 > parameters.length);
-        researchButton.setDisable(false);
-        description.setText(execution.getDescription());
-    }
-
-    private void initializeFields() {
-        parameterText.setText(null);
-        parameterDate.setValue(null);
-        errorText.setVisible(false);
-    }
-
-    @FXML
-    void researchTopProduct(ActionEvent event) {
-        int id = getSelectedId();
-
-        if (id == -1) {
-            Utils.popUp("Please select a row");
-            return;
-        }
-
-        try {
-            switch(currentExecution) {
-                case TOP_PRODUCT_CITY:
-                    TopProductCity topProductCity = new CityManager().getTopProduct(id);
-        
-                    if (topProductCity.isEmpty()) {
-                        Utils.popUp("No product found for this city");
-                    } else {
-                        setTableItems(FXCollections.observableArrayList(topProductCity.toTableEntry()));
-                        setColumnsNames(currentExecution.getOutputs());
-                        setButtons();
-                    }
-                    break;
-                case TOP_PRODUCT_CLIENT:
-                    TopProductClient topProductClient = new UserManager().getTopProduct(id);
-
-                    if (topProductClient.isEmpty()) {
-                        Utils.popUp("No product found for this user");
-                    } else {
-                        setTableItems(FXCollections.observableArrayList(topProductClient.toTableEntry()));
-                        setColumnsNames(currentExecution.getOutputs());
-                        setButtons();
-                    }
-                    break;
-                default:
-                    break;
-            }
-        } catch(SQLException e) {
-            Utils.popUp("An error occured while trying to access the database");
-        }
-    }
-
-    private int getSelectedId() {
-        TableEntry row = table.getSelectionModel().getSelectedItem();
-
-        if (row == null) {
-            return -1;
-        }
-
-        return Integer.parseInt(row.getColumn1());
     }
 }
