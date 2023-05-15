@@ -27,9 +27,9 @@ public class UserManager {
     {
         userDBAccess.delete(user);   
     }
-    public void updateUser(User bussinessEntity) throws SQLException
+    public void updateUser(User user) throws SQLException
     {
-        userDBAccess.update(bussinessEntity,bussinessEntity.getId(),bussinessEntity.getAddress().getId());
+        userDBAccess.update(user);
     }
     public User getUser(int userId) throws SQLException {
         return userDBAccess.getUser(userId);

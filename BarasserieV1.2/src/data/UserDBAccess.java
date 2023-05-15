@@ -9,7 +9,6 @@ import tools.*;
 import tools.DBOutput.Address;
 import tools.DBOutput.TopProductClient;
 import tools.DBOutput.User;
-//clean up ?
 
 public class UserDBAccess implements UserDataAccess {
     private static final String STARTING_STATUS = "regular";
@@ -73,51 +72,79 @@ public class UserDBAccess implements UserDataAccess {
     public void create(User bussinessEntity) throws SQLException {
         int addressId = addAddress(bussinessEntity.getAddress());
 
-        String query = "INSERT INTO business_entity " +
-                "(address, tier, lastname, firstname, isClient, isSupplier, registrationDate, hashedPassword, salt) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String query = new StringBuilder()
+                .append("INSERT INTO business_entity ")
+                .append("(address, tier, lastname, firstname, isClient, isSupplier, registrationDate, hashedPassword, salt) ")
+                .append("VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)")
+                .toString();
         connection = SingletonConnection.getInstance();
-        PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-        statement.setInt(1, addressId);
-        statement.setString(2, STARTING_STATUS);
-        statement.setString(3, bussinessEntity.getLastname());
-        statement.setString(4, bussinessEntity.getFirstname());
-        statement.setBoolean(5, true);
-        statement.setBoolean(6, false);
-        statement.setDate(7, new Date(System.currentTimeMillis()));
+        try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+            statement.setInt(1, addressId);
+            statement.setString(2, STARTING_STATUS);
+            statement.setString(3, bussinessEntity.getLastname());
+            statement.setString(4, bussinessEntity.getFirstname());
+            statement.setBoolean(5, true);
+            statement.setBoolean(6, false);
+            statement.setDate(7, new Date(System.currentTimeMillis()));
 
-        String salt = Utils.generateSalt();
-        String hashedPassword = Utils.hashPassword(bussinessEntity.getPassword(), salt);
-        statement.setString(8, hashedPassword);
-        statement.setString(9, salt);
+            String salt = Utils.generateSalt();
+            String hashedPassword = Utils.hashPassword(bussinessEntity.getPassword(), salt);
+            statement.setString(8, hashedPassword);
+            statement.setString(9, salt);
 
-        int affectedRow = statement.executeUpdate();
-        if (affectedRow == 0) {
-            throw new SQLException("Creating user failed, no rows affected.");
-        }
+            int affectedRow = statement.executeUpdate();
+            if (affectedRow == 0) {
+                throw new SQLException("Creating user failed, no rows affected.");
+            }
 
-        ResultSet generatedKeys = statement.getGeneratedKeys();
-        if (generatedKeys.next()) {
-            addEmail(generatedKeys.getInt(1), bussinessEntity.getEmail());
-        } else {
-            throw new SQLException("Creating user failed, no ID obtained.");
-        }
-        System.out.println("User added");
+            ResultSet generatedKeys = statement.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                addEmail(generatedKeys.getInt(1), bussinessEntity.getEmail());
+            } else {
+                throw new SQLException("Creating user failed, no ID obtained.");
+            }
+            System.out.println("User added");
+            }
+        
     }
 
-
-    public void update(User bussinessEntity,Integer idEntity,Integer idAdress) throws SQLException {
+    public void update(User user) throws SQLException {
         connection = SingletonConnection.getInstance();
-        updateAddress(bussinessEntity.getAddress(),idAdress);
-        updateBussinessEntity(bussinessEntity,idEntity);
-        updateCommunication(bussinessEntity.getEmail(),idEntity);
+        //recup id city
+        String query = new StringBuilder()
+        .append("UPDATE business_entity be ")
+        .append("JOIN communication com ON com.entity = be.id ")
+        .append("JOIN address a ON be.address = a.id ")
+        .append("SET be.firstname = ? , be.lastname = ? , be.hashedPassword = ? , be.salt = ? , ")
+        .append("a.street = ? , a.number = ? , com.communicationDetails = ? , a.city = ? ")
+        .append("WHERE be.id = ? AND a.id = ? AND com.entity = ?")
+        .toString();
+        String password = Utils.hashPassword(user.getPassword(), user.getSalt());
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, user.getFirstname());
+            statement.setString(2, user.getLastname());
+            statement.setString(3, password);
+            statement.setString(4, user.getSalt());
+            statement.setString(5, user.getAddress().getStreet());
+            statement.setInt(6, user.getAddress().getNumber());
+            statement.setString(7, user.getEmail());
+            statement.setInt(8, selectAddress(user.getAddress()));
+            statement.setInt(9, user.getId());
+            statement.setInt(10, user.getIdAddress());
+            statement.setInt(11, user.getId());
+            
+            statement.executeUpdate();
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+        }
+        //add 
         System.out.println("update client");
     }
 
     public void delete(User user) throws SQLException {
         connection = SingletonConnection.getInstance();
         //first to delete is the communication with his id
-        deleteUser(user);
         //then the address with his id
         //and the user
     }
@@ -159,8 +186,8 @@ public class UserDBAccess implements UserDataAccess {
 
     private String getUserQuery(boolean isSoloUser) {
         StringBuilder query = new StringBuilder()
-                .append("SELECT be.id, be.firstname, be.lastname, com.communicationDetails, be.hashedPassword, ")
-                .append("a.street, a.number, c.postalCode, c.name, c.country ")
+                .append("SELECT be.id, be.firstname, be.lastname, com.communicationDetails, be.hashedPassword, a.id, be.salt, ")
+                .append("a.street, a.number, a.city ,c.postalCode, c.name, c.country ")
                 .append("FROM business_entity be ")
                 .append("JOIN address a ON be.address = a.id ")
                 .append("JOIN city c ON a.city = c.id ")
@@ -193,18 +220,19 @@ public class UserDBAccess implements UserDataAccess {
                             resultSet.getString("lastname"),
                             resultSet.getString("communicationDetails"),
                             resultSet.getString("hashedPassword"),
+                            resultSet.getString("salt"),
                             resultSet.getString("street"),
                             resultSet.getInt("number"),
                             resultSet.getInt("postalCode"),
                             resultSet.getString("name"),
-                            resultSet.getString("country"));
+                            resultSet.getString("country"),
+                            resultSet.getInt("a.id"));
                 }
             }
         }
 
         return user;
     }
-
 
     public List<User> getAllUsers() throws SQLException {
         List<User> users = new ArrayList<>();
@@ -224,11 +252,13 @@ public class UserDBAccess implements UserDataAccess {
                             resultSet.getString("lastname"),
                             resultSet.getString("communicationDetails"),
                             resultSet.getString("hashedPassword"),
+                            null,
                             resultSet.getString("street"),
                             resultSet.getInt("number"),
                             resultSet.getInt("postalCode"),
                             resultSet.getString("name"),
-                            resultSet.getString("country"));
+                            resultSet.getString("country"),
+                            null);
                     users.add(user);
                 }
             }
@@ -236,68 +266,7 @@ public class UserDBAccess implements UserDataAccess {
 
         return users;
     }
-
-    //en last
-    public void updateCommunication(String eMail,Integer idEntity) throws SQLException {
-        String query = "UPDATE communication SET communicationDetails = ? WHERE entity = ?";
-        PreparedStatement statement = connection.prepareStatement(query);
-        statement.setString(1, eMail);
-        statement.setInt(2, idEntity);
-        statement.executeUpdate();
-    }
-    //en premier
-    public void updateAddress(Address address,int idAdress) throws SQLException {
-        String query = "UPDATE address SET street = ? , number = ? , city = ? WHERE id = ?";
-        PreparedStatement statement = connection.prepareStatement(query);
-        statement.setString(1, address.getStreet());
-        statement.setInt(2, address.getNumber());
-        statement.setInt(3,selectAddress(address));
-        statement.setInt(4, idAdress);
-        statement.executeUpdate();
-    }
-    //en second
-    public void updateBussinessEntity(User bussinessEntity,int idEntity) throws SQLException {
-        String query = "UPDATE bussiness_entity SET firstname = ? , lastname = ? , hashedPassword = ? WHERE id = ?";
-        PreparedStatement statement = connection.prepareStatement(query);
-        statement.setString(1, bussinessEntity.getFirstname());
-        statement.setString(2, bussinessEntity.getLastname());
-        statement.setString(3, Utils.hashPassword(bussinessEntity.getPassword(),bussinessEntity.getSalt()));
-        statement.setInt(4, idEntity);
-        statement.executeUpdate();
-    }
-    public void deleteUser (User user) throws SQLException{
-        //delete his communication,his address his bankingInfo and some values inside the BE (registrationDate,creditLimit,hashedPassword,salt)
-        //first delete the communication & banking info
-        //then delete the address
-        String query = new StringBuilder()
-        .append("DELETE FROM communication WHERE entity = ?; ")
-        .toString();
-        PreparedStatement statement = connection.prepareStatement(query);
-        statement.setInt(1, user.getId());
-        statement.executeUpdate();
-        //delete the address
-        //deleteAddress(user.getIdAddress());
-        //delete banking info
-        //deleteBankingInfo(user.getId());
-        //update the BE
-        //deleteBussinessEntity(user.getId());
-        
-    }
-
-    public void deleteAddress (Integer idAddress)throws SQLException{
-
-        String query = "DELETE FROM address WHERE id = ?";
-        PreparedStatement statement = connection.prepareStatement(query);
-        statement.setInt(1, idAddress);
-        statement.executeUpdate();
-    }
-    public void deleteBussinessEntity (Integer id) throws SQLException{
-        String query = "DELETE FROM bussiness_entity WHERE id = ?";
-        PreparedStatement statement = connection.prepareStatement(query);
-        statement.setInt(1, id);
-        statement.executeUpdate();
-
-    }
+   
     public Integer selectAddress(Address address) throws SQLException
     {
         Integer cityId = null;

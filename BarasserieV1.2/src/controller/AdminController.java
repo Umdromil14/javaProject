@@ -301,7 +301,9 @@ public class AdminController implements Initializable {
 
             currentExecution = Execution.TOP_PRODUCT_CLIENT;
         } catch (SQLException e) {
+            e.printStackTrace();
             Utils.popUp("An error occured while trying to access the database");
+            
         }
     }
 

@@ -54,11 +54,13 @@ public class User implements tableEntryCreator {
         String lastname,
         String email,
         String password,
+        String salt,
         String street,
         int number,
         int postalCode,
         String city,
-        String country
+        String country,
+        Integer idAddress
     ) 
     {
         this.id = id;
@@ -67,8 +69,11 @@ public class User implements tableEntryCreator {
         this.email = email;
         this.password = password;
         this.address = new Address(street, number, city, postalCode, country);
+        this.idAddress = idAddress;
+        this.salt = salt;
         this.isEmpty = false;
     }
+
     public Integer getIdAddress() {
         return idAddress;
     }
@@ -121,6 +126,21 @@ public class User implements tableEntryCreator {
     public void setAddress(Address address) {
         this.address = address;
     }
+    public void setStreet(String street) {
+        this.address.setStreet(street);
+    }
+    public void setNumber(int number) {
+        this.address.setNumber(number);
+    }
+    public void setPostalCode(int postalCode) {
+        this.address.getCity().setPostalCode(postalCode);
+    }
+    public void setCity(String city) {
+        this.address.getCity().setName(city);
+    }
+    public void setCountry(String country) {
+        this.address.getCity().setCountry(country);
+    }
 
     public void setFirstname(String firstname) {
         this.firstname = firstname;
@@ -140,6 +160,18 @@ public class User implements tableEntryCreator {
 
     public String getRepeatPassword() {
         return repeatPassword;
+    }
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    @Override
+    public String toString() {
+        return "User [address=" + address + ", email=" + email + ", firstname=" + firstname + ", id=" + id
+                + ", isEmpty=" + isEmpty + ", lastname=" + lastname + ", password=" + password + "]";
+    }
+    public void setRepeatPassword(String repeatPassword) {
+        this.repeatPassword = repeatPassword;
     }
 
 

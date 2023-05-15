@@ -44,4 +44,19 @@ public class City implements tableEntryCreator {
             country
         );
     }
+
+    public void setName(String cityName) {
+        this.name = cityName;
+    }
+
+    public void setPostalCode(int postalCode) {
+        this.postalCode = postalCode;
+    }
+    public void setCountry(String country) {
+        this.country = country;
+    }
+    @Override
+    public String toString() {
+        return name + " " + postalCode + ", " + country;
+    }
 }

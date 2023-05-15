@@ -18,6 +18,7 @@ import tools.DBOutput.User;
 //add all the methods in the controller
 public class ModificationController {
 
+    private User modificationUser;
     private UserManager userManager;
     private ArrayList<String> cities;
     private ArrayList<Integer> postalCodes;
@@ -79,6 +80,7 @@ public class ModificationController {
 
     public void displayUser(User user) throws SQLException
     {
+        modificationUser = user;
         firstnameField.setText(user.getFirstname());
         lastnameField.setText(user.getLastname());
         eMailField.setText(user.getEmail());
@@ -95,23 +97,27 @@ public class ModificationController {
     @FXML
     void ConfirmListener(ActionEvent event) {
         try {
-            User user = new User(
-            firstnameField.getText().trim(),
-            lastnameField.getText().trim(), 
-            eMailField.getText().trim(), 
-            passwordField.getText().trim(),
-            streetField.getText().trim(),
-            comboBoxCity.getValue().trim(), 
-            Integer.parseInt(numberField.getText().trim()),
-            Integer.parseInt(comboBoxPC.getValue().toString()),
-            passwordRepeatField.getText().trim(),
-            comboxBoxCountry.getValue().trim()
-            );
-            Utils.filterDataUser(user);
-            //encore à modifier
-            //comment modifier l'adresse ?
-            // get user ?
-            //userManager.updateUser(user);
+            modificationUser.setFirstname(firstnameField.getText().trim());
+            modificationUser.setLastname(lastnameField.getText().trim());
+            modificationUser.setEMail(eMailField.getText().trim());
+            modificationUser.setPassword(passwordField.getText().trim());
+            modificationUser.setRepeatPassword(passwordRepeatField.getText().trim());
+            modificationUser.setStreet(streetField.getText().trim());
+            modificationUser.setCity(comboBoxCity.getValue().trim());
+            modificationUser.setNumber(Integer.parseInt(numberField.getText().trim()));
+            modificationUser.setPostalCode(Integer.parseInt(comboBoxPC.getValue().toString()));
+            modificationUser.setCountry(comboxBoxCountry.getValue().trim());
+            if(Utils.filterDataUser(modificationUser))
+            {
+                userManager.updateUser(modificationUser);
+                Utils.popUp("Modification effectuée");
+                FXMLStage.getInstance().load("/view/adminProfile.fxml","admin view");
+            }
+            else
+            {
+                Utils.popUp("Veuillez remplir tous les champs");
+            }
+            
         } 
         catch (Exception e) {
             e.printStackTrace();
@@ -125,7 +131,6 @@ public class ModificationController {
         try {
             postalCodes = userManager.getPostalCode(city);
             comboBoxPC.getItems().addAll(postalCodes);
-            comboBoxPC.setValue(postalCodes.get(0));
         } catch (SQLException e) {
             e.printStackTrace();
         }
