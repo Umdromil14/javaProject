@@ -19,7 +19,7 @@ public class TableEntry {
             }
         }
     }
-    
+
     public String getColumn1() {
         return column1;
     }

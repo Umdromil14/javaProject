@@ -1,30 +1,30 @@
 package controller;
 
-import java.net.URL;
 import java.sql.SQLException;
-import java.util.ResourceBundle;
+import java.util.ArrayList;
 
-import business.ModificationUser;
 import business.UserManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
+import tools.Utils;
 import tools.DBOutput.User;
 
-public class ModificationController implements Initializable {
+
+//add all the methods in the controller
+public class ModificationController {
 
     private UserManager userManager;
-    private ModificationUser modificationUser;
+    private ArrayList<String> cities;
+    private ArrayList<Integer> postalCodes;
     public ModificationController() {
         userManager = new UserManager();
-        modificationUser = new ModificationUser();
+        this.cities = new ArrayList<>();
+        this.postalCodes = new ArrayList<>();
     }
     
     //#region FXML
@@ -77,29 +77,21 @@ public class ModificationController implements Initializable {
     private Text wrongPassword;
     //#endregion
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        try {
-            //send the id
-            
-            Stage stage = (Stage) streetField.getScene().getWindow();
-            //stage.setuserData(1);
-            User user = modificationUser.getUser(1); 
-            comboxBoxCountry.getItems().addAll(modificationUser.getCountries());
-            comboxBoxCountry.setValue(user.getAddress().getCity().getCountry());
-            comboBoxCity.setValue(user.getAddress().getCity().getName());
-            comboBoxPC.setValue(user.getAddress().getCity().getPostalCode());
-            firstnameField.setText(user.getFirstname());
-            lastnameField.setText(user.getLastname());
-            eMailField.setText(user.getEmail());
-            numberField.setText(user.getAddress().getNumber().toString());
-            streetField.setText(user.getAddress().getStreet());
-            comboBoxCity.getItems().addAll(modificationUser.getCity(user.getAddress().getCity().getCountry()));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public void displayUser(User user) throws SQLException
+    {
+        firstnameField.setText(user.getFirstname());
+        lastnameField.setText(user.getLastname());
+        eMailField.setText(user.getEmail());
+        numberField.setText(user.getAddress().getNumber().toString());
+        streetField.setText(user.getAddress().getStreet());
+        comboBoxCity.getItems().addAll(userManager.getCity(user.getAddress().getCity().getCountry()));
+        comboBoxPC.getItems().addAll(userManager.getPostalCode(user.getAddress().getCity().getPostalCode().toString()));
+        comboxBoxCountry.getItems().addAll(userManager.getCountries());
+        comboBoxCity.setValue(user.getAddress().getCity().getName());
+        comboxBoxCountry.setValue(user.getAddress().getCity().getCountry());
+        comboBoxPC.setValue(user.getAddress().getCity().getPostalCode());
     }
-
+    //encore a check
     @FXML
     void ConfirmListener(ActionEvent event) {
         try {
@@ -109,16 +101,20 @@ public class ModificationController implements Initializable {
             eMailField.getText().trim(), 
             passwordField.getText().trim(),
             streetField.getText().trim(),
-            cityField.getText().trim(), 
+            comboBoxCity.getValue().trim(), 
             Integer.parseInt(numberField.getText().trim()),
-            Integer.parseInt(comboxBoxCountry.getValue().toString()),
+            Integer.parseInt(comboBoxPC.getValue().toString()),
             passwordRepeatField.getText().trim(),
-            CountryField.getText().trim()
+            comboxBoxCountry.getValue().trim()
             );
-            userManager.createUser(user);
+            Utils.filterDataUser(user);
+            //encore à modifier
+            //comment modifier l'adresse ?
+            // get user ?
+            //userManager.updateUser(user);
         } 
         catch (Exception e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
 
     }
@@ -127,7 +123,9 @@ public class ModificationController implements Initializable {
         String city = comboBoxCity.getValue();
         comboBoxPC.getItems().clear();
         try {
-            comboBoxPC.getItems().addAll(modificationUser.getPostalCode(city));
+            postalCodes = userManager.getPostalCode(city);
+            comboBoxPC.getItems().addAll(postalCodes);
+            comboBoxPC.setValue(postalCodes.get(0));
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -137,11 +135,11 @@ public class ModificationController implements Initializable {
         String country = comboxBoxCountry.getValue();
         comboBoxCity.getItems().clear();
         try {
-            comboBoxCity.getItems().addAll(modificationUser.getCity(country));
+            cities = userManager.getCity(country);
+            comboBoxCity.getItems().addAll(cities);
+            comboBoxCity.setValue(cities.get(0));
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-    
-
 }

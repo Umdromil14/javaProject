@@ -23,3 +23,4 @@ public class CityManager {
         return dao.getTopProduct(cityId);
     }
 }
+

@@ -4,6 +4,8 @@ import javax.swing.JOptionPane;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import tools.DBOutput.User;
+
 
 public class Utils {
     public static String hashPassword(String password, String salt) {
@@ -34,5 +36,32 @@ public class Utils {
 
     public static void popUp(String message) {
         JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.WARNING_MESSAGE);
+    }
+
+    //à bouger ?
+    public static Boolean filterDataUser(User bussinessEntity)
+    {
+        return isSamePassword(bussinessEntity.getPassword(), bussinessEntity.getRepeatPassword()) && 
+        !isFieldEmpty(bussinessEntity) && 
+        isValidEmail(bussinessEntity.getEmail());
+    }
+    public static boolean isValidEmail(String email) {
+        return email.matches("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$");
+    }
+    public static Boolean isSamePassword(String password, String repeatPassword)
+    {
+        return password.equals(repeatPassword);
+    }
+    public static Boolean isFieldEmpty(User bussinessEntity)
+    {
+        return bussinessEntity.getFirstname().isEmpty() || 
+        bussinessEntity.getLastname().isEmpty() || 
+        bussinessEntity.getEmail().isEmpty() || 
+        bussinessEntity.getPassword().isEmpty() ||
+        bussinessEntity.getRepeatPassword().isEmpty()||
+        bussinessEntity.getAddress().getCity().getName().isEmpty() || 
+        bussinessEntity.getAddress().getStreet().isEmpty() || 
+        bussinessEntity.getAddress().getNumber() == null || 
+        bussinessEntity.getAddress().getCity().getPostalCode() == null;
     }
 }

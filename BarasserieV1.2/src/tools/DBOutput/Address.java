@@ -1,6 +1,6 @@
-package tools;
+package tools.DBOutput;
 
-import tools.DBOutput.City;
+//switch into DBOutput
 
 public class Address {
     private Integer id;

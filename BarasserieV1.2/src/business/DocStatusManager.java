@@ -17,3 +17,4 @@ public class DocStatusManager {
         return dao.getAllDocStatus();
     }
 }
+

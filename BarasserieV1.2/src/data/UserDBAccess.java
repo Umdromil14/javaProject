@@ -6,17 +6,20 @@ import java.util.List;
 
 import interfaces.UserDataAccess;
 import tools.*;
+import tools.DBOutput.Address;
 import tools.DBOutput.TopProductClient;
 import tools.DBOutput.User;
+//clean up ?
 
 public class UserDBAccess implements UserDataAccess {
     private static final String STARTING_STATUS = "regular";
+    private Connection connection ;
 
     public Integer addAddress(Address address) throws SQLException {
         Integer cityId = null;
         Integer addressId = null;
         String query = "SELECT id FROM city WHERE name = ? AND postalCode = ? AND country = ?";
-        Connection connection = SingletonConnection.getInstance();
+        connection = SingletonConnection.getInstance();
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, address.getCity().getName());
             statement.setInt(2, address.getCity().getPostalCode());
@@ -57,7 +60,7 @@ public class UserDBAccess implements UserDataAccess {
     public void addEmail(int id, String email) throws SQLException {
         String query = "INSERT INTO communication (entity, type, communicationDetails) VALUES (?, ?, ?)";
 
-        Connection connection = SingletonConnection.getInstance();
+        connection = SingletonConnection.getInstance();
         PreparedStatement statement = connection.prepareStatement(query);
 
         statement.setInt(1, id);
@@ -65,16 +68,15 @@ public class UserDBAccess implements UserDataAccess {
         statement.setString(3, email);
 
         statement.executeUpdate();
-
     }
 
-    public void addUser(User bussinessEntity) throws SQLException {
+    public void create(User bussinessEntity) throws SQLException {
         int addressId = addAddress(bussinessEntity.getAddress());
 
         String query = "INSERT INTO business_entity " +
                 "(address, tier, lastname, firstname, isClient, isSupplier, registrationDate, hashedPassword, salt) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        Connection connection = SingletonConnection.getInstance();
+        connection = SingletonConnection.getInstance();
         PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
         statement.setInt(1, addressId);
         statement.setString(2, STARTING_STATUS);
@@ -103,6 +105,23 @@ public class UserDBAccess implements UserDataAccess {
         System.out.println("User added");
     }
 
+
+    public void update(User bussinessEntity,Integer idEntity,Integer idAdress) throws SQLException {
+        connection = SingletonConnection.getInstance();
+        updateAddress(bussinessEntity.getAddress(),idAdress);
+        updateBussinessEntity(bussinessEntity,idEntity);
+        updateCommunication(bussinessEntity.getEmail(),idEntity);
+        System.out.println("update client");
+    }
+
+    public void delete(User user) throws SQLException {
+        connection = SingletonConnection.getInstance();
+        //first to delete is the communication with his id
+        deleteUser(user);
+        //then the address with his id
+        //and the user
+    }
+
     public TopProductClient getTopProduct(int userId) throws SQLException {
         TopProductClient topProductClient = new TopProductClient();
 
@@ -119,7 +138,7 @@ public class UserDBAccess implements UserDataAccess {
                 .append("LIMIT 1")
                 .toString();
 
-        Connection connection = SingletonConnection.getInstance();
+        connection = SingletonConnection.getInstance();
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, userId);
@@ -161,7 +180,7 @@ public class UserDBAccess implements UserDataAccess {
 
         String query = getUserQuery(true);
 
-        Connection connection = SingletonConnection.getInstance();
+        connection = SingletonConnection.getInstance();
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, userId);
@@ -186,12 +205,13 @@ public class UserDBAccess implements UserDataAccess {
         return user;
     }
 
+
     public List<User> getAllUsers() throws SQLException {
         List<User> users = new ArrayList<>();
 
         String query = getUserQuery(false);
 
-        Connection connection = SingletonConnection.getInstance();
+        connection = SingletonConnection.getInstance();
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
 
@@ -215,5 +235,82 @@ public class UserDBAccess implements UserDataAccess {
         }
 
         return users;
+    }
+
+    //en last
+    public void updateCommunication(String eMail,Integer idEntity) throws SQLException {
+        String query = "UPDATE communication SET communicationDetails = ? WHERE entity = ?";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, eMail);
+        statement.setInt(2, idEntity);
+        statement.executeUpdate();
+    }
+    //en premier
+    public void updateAddress(Address address,int idAdress) throws SQLException {
+        String query = "UPDATE address SET street = ? , number = ? , city = ? WHERE id = ?";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, address.getStreet());
+        statement.setInt(2, address.getNumber());
+        statement.setInt(3,selectAddress(address));
+        statement.setInt(4, idAdress);
+        statement.executeUpdate();
+    }
+    //en second
+    public void updateBussinessEntity(User bussinessEntity,int idEntity) throws SQLException {
+        String query = "UPDATE bussiness_entity SET firstname = ? , lastname = ? , hashedPassword = ? WHERE id = ?";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, bussinessEntity.getFirstname());
+        statement.setString(2, bussinessEntity.getLastname());
+        statement.setString(3, Utils.hashPassword(bussinessEntity.getPassword(),bussinessEntity.getSalt()));
+        statement.setInt(4, idEntity);
+        statement.executeUpdate();
+    }
+    public void deleteUser (User user) throws SQLException{
+        //delete his communication,his address his bankingInfo and some values inside the BE (registrationDate,creditLimit,hashedPassword,salt)
+        //first delete the communication & banking info
+        //then delete the address
+        String query = new StringBuilder()
+        .append("DELETE FROM communication WHERE entity = ?; ")
+        .toString();
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setInt(1, user.getId());
+        statement.executeUpdate();
+        //delete the address
+        //deleteAddress(user.getIdAddress());
+        //delete banking info
+        //deleteBankingInfo(user.getId());
+        //update the BE
+        //deleteBussinessEntity(user.getId());
+        
+    }
+
+    public void deleteAddress (Integer idAddress)throws SQLException{
+
+        String query = "DELETE FROM address WHERE id = ?";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setInt(1, idAddress);
+        statement.executeUpdate();
+    }
+    public void deleteBussinessEntity (Integer id) throws SQLException{
+        String query = "DELETE FROM bussiness_entity WHERE id = ?";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setInt(1, id);
+        statement.executeUpdate();
+
+    }
+    public Integer selectAddress(Address address) throws SQLException
+    {
+        Integer cityId = null;
+        String query = "SELECT id FROM city WHERE name = ? AND postalCode = ? AND country = ?";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, address.getCity().getName());
+        statement.setInt(2, address.getCity().getPostalCode());
+        statement.setString(3, address.getCity().getCountry());
+
+        ResultSet rs = statement.executeQuery();
+        while (rs.next()) {
+            cityId = rs.getInt("id");
+        }
+        return cityId;
     }
 }

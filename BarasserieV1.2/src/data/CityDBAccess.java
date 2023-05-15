@@ -8,13 +8,15 @@ import interfaces.CityDataAccess;
 import tools.DBOutput.City;
 import tools.DBOutput.TopProductCity;
 
+
 public class CityDBAccess implements CityDataAccess {
+    private Connection connection;
     public List<City> getAllCities() throws SQLException {
         List<City> cities = new ArrayList<>();
 
         String query = "SELECT * FROM city";
         
-        Connection connection = SingletonConnection.getInstance();
+        connection = SingletonConnection.getInstance();
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
 
@@ -51,7 +53,7 @@ public class CityDBAccess implements CityDataAccess {
             .append("LIMIT 1")
             .toString();
 
-        Connection connection = SingletonConnection.getInstance();
+        connection = SingletonConnection.getInstance();
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, cityId);

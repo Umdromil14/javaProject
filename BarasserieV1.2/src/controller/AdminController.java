@@ -8,12 +8,15 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
+import java.io.IOException;
 import java.net.URL;
+import java.sql.Date;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+
+import javax.swing.JOptionPane;
 
 import business.*;
 import tools.Utils;
@@ -21,23 +24,26 @@ import tools.DBOutput.*;
 import tools.enumeration.Execution;
 import tools.exception.InvalidInputException;
 
+
 public class AdminController implements Initializable {
+
     private static Execution currentExecution;
     
     private CityManager cityManager;
     private UserManager userManager;
     private DocStatusManager docStatusManager;
+    private InvoiceManager invoiceManager;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         cityManager = new CityManager();
         userManager = new UserManager();
         docStatusManager = new DocStatusManager();
-
+        invoiceManager = new InvoiceManager();
         setButtons();
         setComboBox();
     }
-
+    //#region FXML
     @FXML
     private TableColumn<TableEntry, String> column1;
 
@@ -103,7 +109,8 @@ public class AdminController implements Initializable {
 
     @FXML
     private TableView<TableEntry> table;
-
+    //#endregion
+    
     private void setComboBox() {
         try {
             List<String> docStatus = docStatusManager.getAllDocStatus();
@@ -142,6 +149,7 @@ public class AdminController implements Initializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
     @FXML
@@ -168,12 +176,53 @@ public class AdminController implements Initializable {
 
     @FXML
     void update(ActionEvent event) {
-
+        int id = getSelectedId();
+        if (id == -1) {
+            Utils.popUp("Please select a row");
+            return;
+        }
+        try {
+            User user = userManager.getUser(id);
+            if (user.isEmpty()) {
+                Utils.popUp("No user found for this id");
+            } else {
+                FXMLStage.getInstance().load("/view/modificationUser.fxml", "Modification", user);
+            }
+        }
+        catch(NullPointerException |IOException|SQLException e) {
+            Utils.popUp("An error occured while trying to access the database");
+            e.printStackTrace();
+        }
+        
     }
 
+    //encore a check
     @FXML
     void delete(ActionEvent event) {
+        int id = getSelectedId();
+        if (id == -1) {
+            Utils.popUp("Please select a row");
+            return;
+        }
+        int response = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this user?", "Delete user", JOptionPane.YES_NO_OPTION);
+        if (response == JOptionPane.YES_OPTION)
+        {
 
+        }
+        // try {
+        //     User user = userManager.getUser(id);
+        //     System.out.println(user);
+        //     if (user.isEmpty()) {
+        //         Utils.popUp("No user found for this id");
+        //     } else {
+        //         userManager.deleteUser(user);
+        //         Utils.popUp("User deleted");
+        //     }
+        // }
+        // catch(NullPointerException |SQLException e) {
+        //     Utils.popUp("An error occured while trying to access the database");
+        //     e.printStackTrace();
+        // }
     }
 
     @FXML
@@ -276,29 +325,51 @@ public class AdminController implements Initializable {
         }
     }
 
+
     @FXML
-    void researchInvoice(ActionEvent event) {
+    void researchInvoice(ActionEvent event) throws SQLException {
         try {
             validateNotNullInput();
         } catch (InvalidInputException e) {
             Utils.popUp(e.getMessage());
             return;
         }
-
+        List<Invoice> invoices = new ArrayList<>();
+        List<TableEntry> tableEntries = new ArrayList<>();
+        Integer id;
         String clientId = parameterText.getText().trim();
+        Date start = Date.valueOf(parameterStartingDate.getValue());
+        Date end = Date.valueOf(parameterEndingDate.getValue());
+        String status = parameterComboBox.getValue();
+
         if (!clientId.isEmpty()) {
             try {
-                int id = Integer.parseInt(clientId);
+                id = Integer.parseInt(clientId);
                 validateIdInput(id);
+                invoices = invoiceManager.getInvoices(id, start, end, status);
             } catch (NumberFormatException | InvalidInputException e) {
+                
+                return;
+            }     
+        } 
+        else {
+            try {
+                invoices = invoiceManager.getInvoices(null ,start, end, status);
+            } catch (SQLException e) {
                 Utils.popUp("The client ID must be a positive integer");
                 return;
             }
-
-            // continuer ici si on veut faire la recherche par client
-        } else {
-            // continuer ici si on veut faire la recherche par date et status
         }
+
+        for (Invoice invoice : invoices) {
+            tableEntries.add(invoice.toTableEntry());
+        }
+        setTableItems(FXCollections.observableArrayList(tableEntries));
+        setColumnsNames(Execution.INVOICE.getOutputs());
+        setButtons();
+
+        currentExecution = Execution.INVOICE;
+        
     }
 
     private void setColumnsNames(String... columnNames) {

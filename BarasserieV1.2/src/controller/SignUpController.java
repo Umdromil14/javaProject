@@ -6,6 +6,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
+import javax.swing.JOptionPane;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -14,13 +16,13 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
-import business.ModificationUser;
 import business.UserManager;
+import tools.Utils;
 import tools.DBOutput.User;
+
 
 public class SignUpController implements Initializable {
     private UserManager userManager;
-    private ModificationUser modificationUser;
     private ArrayList<String> countries;
     private ArrayList<String> cities;
     private ArrayList<Integer> postalCodes;
@@ -28,10 +30,9 @@ public class SignUpController implements Initializable {
 
     public SignUpController() throws SQLException {
         userManager = new UserManager();
-        modificationUser = new ModificationUser();
-        this.countries = modificationUser.getCountries();
-        this.cities = modificationUser.getCity(countries.get(0));
-        this.postalCodes = modificationUser.getPostalCode(cities.get(0));
+        this.countries = userManager.getCountries();
+        this.cities = userManager.getCity(countries.get(0));
+        this.postalCodes = userManager.getPostalCode(cities.get(0));
     }
 
     @FXML
@@ -78,16 +79,18 @@ public class SignUpController implements Initializable {
 
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
-        //pre filled the postal code, city, country
         ComboBoxCountry.getItems().addAll(countries);
         ComboBoxCountry.setValue(countries.get(0));
         ComboBoxCity.getItems().addAll(cities);
         ComboBoxCity.setValue(cities.get(0));
         ComboBoxPC.getItems().addAll(postalCodes);
         ComboBoxPC.setValue(postalCodes.get(0));
-        
     }
 
+    //check if the email is already used
+    //add a random UUID to the user
+    //reset button
+    //set visible the error message with his referenced text
     @FXML
     public void ConfirmListener(ActionEvent event) throws NullPointerException, IOException {
         try {
@@ -103,14 +106,14 @@ public class SignUpController implements Initializable {
                 passwordRepeatField.getText().trim(),
                 ComboBoxCountry.getValue()
             );
+            Utils.filterDataUser(user);
             userManager.createUser(user);
-            //send a message (user created)
+            JOptionPane.showMessageDialog(null, "User created");
             FXMLStage.getInstance().load("/view/adminProfile.fxml", "admin view");
     
-        } catch (SQLException e)// and catch the error of Integer.parseInt
+        } catch (SQLException e)
         {
             e.printStackTrace();
-            //catch the exception
         }
     }
 
@@ -119,8 +122,9 @@ public class SignUpController implements Initializable {
         String country = ComboBoxCountry.getValue();
         ComboBoxCity.getItems().clear();
         try {
-            ComboBoxCity.getItems().addAll(modificationUser.getCity(country));
-            //array list to get the city and to set to the first one?
+            cities = userManager.getCity(country);
+            ComboBoxCity.getItems().addAll(cities);
+            ComboBoxCity.setValue(cities.get(0));
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -131,8 +135,8 @@ public class SignUpController implements Initializable {
         String city = ComboBoxCity.getValue();
         ComboBoxPC.getItems().clear();
         try {
-            ComboBoxPC.getItems().addAll(modificationUser.getPostalCode(city));
-            //array list to get the postal code and to set to the first one?
+            postalCodes = userManager.getPostalCode(city);
+            ComboBoxPC.getItems().addAll(postalCodes);
         } catch (SQLException e) {
             e.printStackTrace();
         }

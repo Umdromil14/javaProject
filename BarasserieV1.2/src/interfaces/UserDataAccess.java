@@ -12,4 +12,8 @@ public interface UserDataAccess {
     public User getUser(int userId) throws SQLException;
 
     public List<User> getAllUsers() throws SQLException;
+
+    public void create(User bussinessEntity) throws SQLException;
+    public void update(User bussinessEntity,Integer id,Integer idAdress) throws SQLException;
+    public void delete(User user) throws SQLException;
 }

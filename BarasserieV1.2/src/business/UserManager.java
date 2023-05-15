@@ -1,96 +1,57 @@
 package business;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JOptionPane;
 
-import data.DAODataBase;
-import data.DBClient;
+import data.LocalityDBAccess;
 import data.UserDBAccess;
-import interfaces.UserDataAccess;
-import tools.*;
 import tools.DBOutput.TopProductClient;
 import tools.DBOutput.User;
 
+//import all méthods in controller
+
 public class UserManager {
-    private DAODataBase dao;
-    private UserDataAccess userDBAccess;
-
+    private UserDBAccess userDBAccess;
+    private LocalityDBAccess getComboBoxValues;
     public UserManager() {
-        dao = new DBClient();
         userDBAccess = new UserDBAccess();
+        getComboBoxValues = new LocalityDBAccess();
     }
-
+    //#region crud
     public void createUser(User user) throws SQLException
     {
-        //all the filter to add
-        if (filterDataUser(user))
-        {
-                dao.create(user);
-        }
-        else
-        {
-            throw new SQLException("Invalid data");
-        }
-
+        userDBAccess.create(user);
     }
-    public void deleteUser(Integer id,Integer idAdress) throws SQLException
+    public void deleteUser(User user) throws SQLException
     {
-        int response = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this user?", "Delete user", JOptionPane.YES_NO_OPTION);
-        if (response == JOptionPane.YES_OPTION) 
-        {
-            dao.delete(id,idAdress);   
-        }
+        userDBAccess.delete(user);   
     }
     public void updateUser(User bussinessEntity) throws SQLException
     {
-        //all the filter to update
-        try
-        {
-            if (filterDataUser(bussinessEntity))
-            {
-                dao.update(bussinessEntity,bussinessEntity.getId(),bussinessEntity.getAddress().getId());
-            }
-        }
-        catch (SQLException e)
-        {
-            throw new SQLException(e.getMessage());
-        }
+        userDBAccess.update(bussinessEntity,bussinessEntity.getId(),bussinessEntity.getAddress().getId());
     }
-        
-    public Boolean filterDataUser(User bussinessEntity)
-    {
-        return isSamePassword(bussinessEntity.getPassword(), bussinessEntity.getRepeatPassword()) && 
-        !isFieldEmpty(bussinessEntity)&& 
-        isValidEmail(bussinessEntity.getEmail());
+    public User getUser(int userId) throws SQLException {
+        return userDBAccess.getUser(userId);
     }
-    public boolean isValidEmail(String email) {
-        return email.matches("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$");
+    //#endregion
+
+    //#region getComboBoxValues à changer ?
+    public ArrayList<String> getCountries() throws SQLException {
+        return getComboBoxValues.getCountries();
     }
-    public Boolean isSamePassword(String password, String repeatPassword)
-    {
-        return password.equals(repeatPassword);
+
+    public ArrayList<Integer> getPostalCode(String city) throws SQLException {
+        return getComboBoxValues.getPostalCode(city);
     }
-    public Boolean isFieldEmpty(User bussinessEntity)
-    {
-        
-        return bussinessEntity.getFirstname().isEmpty() || 
-        bussinessEntity.getLastname().isEmpty() || 
-        bussinessEntity.getEmail().isEmpty() || 
-        bussinessEntity.getPassword().isEmpty() ||
-        bussinessEntity.getRepeatPassword().isEmpty()||
-        bussinessEntity.getAddress().getCity().getName().isEmpty() || 
-        bussinessEntity.getAddress().getStreet().isEmpty() || 
-        bussinessEntity.getAddress().getNumber() == null || 
-        bussinessEntity.getAddress().getCity().getPostalCode() == null;
+
+    public ArrayList<String> getCity(String country) throws SQLException {
+        return getComboBoxValues.getCity(country);
     }
+    //#endregion
 
     public TopProductClient getTopProduct(int userId) throws SQLException {
         return userDBAccess.getTopProduct(userId);
-    }
-
-    public User getUser(int userId) throws SQLException {
-        return userDBAccess.getUser(userId);
     }
 
     public List<User> getAllUsers() throws SQLException {

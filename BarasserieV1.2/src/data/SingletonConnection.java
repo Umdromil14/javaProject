@@ -2,10 +2,11 @@ package data;
 
 import java.sql.*;
 
+//ok
 public class SingletonConnection {
     private static final String DB_URL = "jdbc:mysql://localhost:3306/barasserie";
     private static final String USER = "root";
-    private static final String PASSWORD = "root";
+    private static final String PASSWORD = "Cyr14061406";
 
     private static Connection connection;
 
