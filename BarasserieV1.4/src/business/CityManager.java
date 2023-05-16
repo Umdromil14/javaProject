@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 package business;
 
 import java.sql.SQLException;
@@ -25,31 +24,3 @@ public class CityManager {
     }
 }
 
-=======
-package business;
-
-import java.sql.SQLException;
-import java.util.List;
-
-import data.CityDBAccess;
-import interfaces.CityDataAccess;
-import tools.DBOutput.City;
-import tools.DBOutput.TopProductCity;
-
-public class CityManager {
-    private CityDataAccess dao;
-
-    public CityManager() {
-        this.dao = new CityDBAccess();
-    }
-
-    public List<City> getAllCities() throws SQLException {
-        return dao.getAllCities();
-    }
-
-    public TopProductCity getTopProduct(int cityId) throws SQLException {
-        return dao.getTopProduct(cityId);
-    }
-}
-
->>>>>>> a3552b73418bdd63b5a8a8ec3eefd92e53f2f519
