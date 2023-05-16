@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 package tools.DBOutput;
 
 import controller.TableEntry;
@@ -46,3 +47,53 @@ public class TopProductClient implements tableEntryCreator {
         return new TableEntry(clientFirstname, clientLastname, productName, Integer.toString(quantity));
     }
 }
+=======
+package tools.DBOutput;
+
+import controller.TableEntry;
+import interfaces.tableEntryCreator;
+
+public class TopProductClient implements tableEntryCreator {
+    private String clientFirstname;
+    private String clientLastname;
+    private String productName;
+    private int quantity;
+    private boolean isEmpty;
+
+    public TopProductClient() {
+        this.isEmpty = true;
+    }
+
+    public void setTopProductClient(String clientFirstname, String clientLastname, String productName, int quantity) {
+        this.clientFirstname = clientFirstname;
+        this.clientLastname = clientLastname;
+        this.productName = productName;
+        this.quantity = quantity;
+        this.isEmpty = false;
+    }
+
+    public String getClientFirstname() {
+        return clientFirstname;
+    }
+
+    public String getClientLastname() {
+        return clientLastname;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public boolean isEmpty() {
+        return isEmpty;
+    }
+
+    public TableEntry toTableEntry() {
+        return new TableEntry(clientFirstname, clientLastname, productName, Integer.toString(quantity));
+    }
+}
+>>>>>>> a3552b73418bdd63b5a8a8ec3eefd92e53f2f519
