@@ -9,14 +9,12 @@ public class User implements tableEntryCreator {
     private String lastname;
     private String email;
     private String password;
-    // private String repeatPassword;
     private String salt;
     private Address address;
     private boolean isEmpty;
     private Integer idAddress;
 
-    //clean up
-
+    
     public User() {
         this.isEmpty = true;
     }
@@ -27,7 +25,6 @@ public class User implements tableEntryCreator {
         this.lastname = lastname;
         this.email = email;
         this.password = password;
-        // this.repeatPassword = repeatPassword;
         this.salt = salt;
         this.address = address;
         this.idAddress = idAddress;
@@ -36,14 +33,6 @@ public class User implements tableEntryCreator {
 
     public User(String firstname, String lastname, String eMail, String password, String street, String city, Integer number, Integer postalCode, String repeatPassword, String country) {
         this(null, firstname, lastname, eMail, password, null , new Address(street, number, city, postalCode, country), null, repeatPassword);
-    }
-
-    public User(Integer id, Integer addressId, String firstname, String lastname, String password, String salt) {
-        this(id, firstname, lastname, null, password, salt,null, addressId, null);
-    }
-
-    public User(String firstname, String lastname, String eMail, String password, String repeatPassword, String street, String city, int number, int postalCode, String country) {
-        this(null, firstname, lastname, eMail, password, null, new Address(street, number, city, postalCode, country), null, repeatPassword);
     }
 
     public void setUser(
@@ -122,51 +111,10 @@ public class User implements tableEntryCreator {
         );
     }
 
-    public void setEmpty(boolean isEmpty) {
-        this.isEmpty = isEmpty;
-    }
-
-    public void setAddress(Address address) {
-        this.address = address;
-    }
-
-    public void setStreet(String street) {
-        this.address.setStreet(street);
-    }
-
-    public void setNumber(int number) {
-        this.address.setNumber(number);
-    }
-
-    public void setPostalCode(int postalCode) {
-        this.address.getCity().setPostalCode(postalCode);
-    }
-
-    public void setCity(String city) {
-        this.address.getCity().setName(city);
-    }
-
-    public void setCountry(String country) {
-        this.address.getCity().setCountry(country);
-    }
 
     public void setFirstname(String firstname) {
         this.firstname = firstname;
     }
-
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
-    }
-
-    public void setEMail(String email) {
-        this.email = email;
-    }
-
-    
-
-    // public String getRepeatPassword() {
-    //     return repeatPassword;
-    // }
     
     public void setPassword(String password) {
         this.password = password;
@@ -175,10 +123,5 @@ public class User implements tableEntryCreator {
     public void setSalt(String salt) {
         this.salt = salt;
     }
-
-    // public void setRepeatPassword(String repeatPassword) {
-    //     this.repeatPassword = repeatPassword;
-    // }
-
 
 }

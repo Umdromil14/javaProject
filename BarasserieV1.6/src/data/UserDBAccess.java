@@ -19,6 +19,7 @@ public class UserDBAccess implements UserDataAccess {
         communicationDBAccess = new CommunicationDBAccess();
     }
 
+    @Override
     public void create(User user) throws SQLException {
         int addressId = addressDBAccess.addAddress(user.getAddress());
 
@@ -56,6 +57,7 @@ public class UserDBAccess implements UserDataAccess {
         }
     }
 
+    @Override
     public void update(User user) throws SQLException {
         String query = new StringBuilder()
             .append("UPDATE business_entity be ")
@@ -85,6 +87,7 @@ public class UserDBAccess implements UserDataAccess {
         }
     }
 
+    @Override
     public void delete(User user) throws SQLException {
         connection = SingletonConnection.getInstance();
 
@@ -94,8 +97,12 @@ public class UserDBAccess implements UserDataAccess {
             deleteWorkflow(user.getId());
             addressDBAccess.deleteAddress(user.getIdAddress());
         }
+        else {
+            tools.Utils.warningPopUp("You can't delete a user with a document");
+        }
     }
 
+    @Override
     public boolean userHasDocument(Integer idUser) throws SQLException {
         connection = SingletonConnection.getInstance();
 
@@ -114,6 +121,7 @@ public class UserDBAccess implements UserDataAccess {
             }           
         }
     }
+
 
     private void deleteUser(Integer clientId) throws SQLException {
         String query = new StringBuilder()

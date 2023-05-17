@@ -16,9 +16,7 @@ public class Main extends Application {
         }
     }
 
-    //TODO message not possible to delete User when doc
-    //TODO interfaces add methods from db
-    //TODO check DBOutput et Utils
+
     public static void main(String[] args) throws Exception {    
         launch(args);
         //? passe par manager ?

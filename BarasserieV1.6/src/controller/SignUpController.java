@@ -77,8 +77,7 @@ public class SignUpController implements Initializable {
     }
 
     private boolean hasEmptyField() {
-        return firstnameField.getText().trim().isEmpty() ||
-            lastnameField.getText().trim().isEmpty() ||
+        return lastnameField.getText().trim().isEmpty() ||
             emailField.getText().trim().isEmpty() ||
             passwordField.getText().trim().isEmpty() ||
             passwordRepeatField.getText().trim().isEmpty() ||
@@ -127,6 +126,9 @@ public class SignUpController implements Initializable {
                 passwordRepeatField.getText().trim(),
                 comboBoxCountry.getValue()
             );
+            if (firstnameField.getText().trim().isEmpty()) {
+                user.setFirstname(null);
+            }
 
             userManager.createUser(user);
             Utils.successPopUp("User successfully created");

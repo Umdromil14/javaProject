@@ -86,8 +86,7 @@ public class ModificationController {
     }
 
     private boolean hasEmptyField() {
-        return firstnameField.getText().trim().isEmpty() ||
-            lastnameField.getText().trim().isEmpty() ||
+        return lastnameField.getText().trim().isEmpty() ||
             emailField.getText().trim().isEmpty() ||
             passwordField.getText().trim().isEmpty() ||
             passwordRepeatField.getText().trim().isEmpty() ||
@@ -138,6 +137,9 @@ public class ModificationController {
                 comboBoxCountry.getValue().trim(),
                 modificationUser.getIdAddress()
             );
+            if (firstnameField.getText().trim().isEmpty()) {
+                modificationUser.setFirstname(null);
+            }
             userManager.updateUser(modificationUser);
 
             Utils.successPopUp("User successfully updated");

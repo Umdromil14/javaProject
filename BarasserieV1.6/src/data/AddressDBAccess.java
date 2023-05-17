@@ -144,6 +144,7 @@ public class AddressDBAccess implements AddressDataAccess {
         }
     }
 
+    @Override
     public Integer getAddress(Address address) throws SQLException {
         Integer cityId = null;
         String query = "SELECT id FROM city WHERE name = ? AND postalCode = ? AND country = ?";
@@ -164,6 +165,7 @@ public class AddressDBAccess implements AddressDataAccess {
         return cityId;
     }
 
+    @Override
     public Integer addAddress(Address address) throws SQLException {
         Integer cityId = getAddress(address);
         Integer addressId = null;

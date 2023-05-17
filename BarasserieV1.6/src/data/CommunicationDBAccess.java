@@ -22,6 +22,7 @@ public class CommunicationDBAccess implements CommunicationDataAccess {
         }
     }
 
+    @Override
     public void addEmail(int id, String email) throws SQLException {
         String query = "INSERT INTO communication (entity, type, communicationDetails) VALUES (?, ?, ?)";
 
@@ -36,6 +37,7 @@ public class CommunicationDBAccess implements CommunicationDataAccess {
         }
     }
 
+    @Override
     public void deleteEmail(Integer clientId) throws SQLException {
         connection = SingletonConnection.getInstance();
 

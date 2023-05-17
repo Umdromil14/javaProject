@@ -13,9 +13,9 @@ public interface UserDataAccess {
 
     public List<User> getAllUsers() throws SQLException;
 
-    public void create(User bussinessEntity) throws SQLException;
-    public void update(User bussinessEntity) throws SQLException;
+    public void create(User user) throws SQLException;
+    public void update(User user) throws SQLException;
     public void delete(User user) throws SQLException;
 
-    //TODO: add other methods
+    public boolean userHasDocument(Integer idUser) throws SQLException ;
 }

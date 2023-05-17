@@ -51,7 +51,7 @@
                   <Tooltip text="Please answer your Email" />
                </tooltip>
             </TextField>
-            <TextField fx:id="firstnameField" cache="true" depthTest="DISABLE" layoutX="317.0" layoutY="108.0" prefHeight="26.0" prefWidth="210.0" promptText="Firstname" style="-fx-background-color: transparent; -fx-border-color: #808080; -fx-border-width: 0px 0px 2px 0px;" />
+            <TextField fx:id="firstnameField" cache="true" depthTest="DISABLE" layoutX="317.0" layoutY="108.0" prefHeight="26.0" prefWidth="210.0" promptText="Firstname (optionnal)" style="-fx-background-color: transparent; -fx-border-color: #808080; -fx-border-width: 0px 0px 2px 0px;" />
             <PasswordField fx:id="passwordField" layoutX="45.0" layoutY="250.0" prefHeight="26.0" prefWidth="210.0" promptText="Password" style="-fx-background-color: transparent; -fx-border-color: #808080; -fx-border-width: 0px 0px 2px 0px;">
                <tooltip>
                   <Tooltip text="Please answer your password, don't forget it !" />

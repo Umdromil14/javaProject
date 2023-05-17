@@ -1,6 +1,5 @@
 package tools.DBOutput;
 
-//switch into DBOutput
 
 public class Address {
     private Integer id;
@@ -35,23 +34,4 @@ public class Address {
         return city;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public void setStreet(String street) {
-        this.street = street;
-    }
-
-    public void setNumber(Integer number) {
-        this.number = number;
-    }
-
-    public void setCity(City city) {
-        this.city = city;
-    }
-    @Override
-    public String toString() {
-        return street + " " + number + ", " + city.toString();
-    }
 }
