@@ -3,8 +3,8 @@
 CREATE TABLE PRODUCT(  
     id INT NOT NULL AUTO_INCREMENT ,
     name VARCHAR(255) NOT NULL,
-    actualUnitPrice DECIMAL(4,2) NOT NULL,
-    remainingQuantity INT NOT NULL,
+    actualUnitPrice DECIMAL(4,2) NOT NULL CHECK (actualUnitPrice >= 0 ) ,
+    remainingQuantity INT NOT NULL CHECK (remainingQuantity >= 0 ) ,
     PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -45,7 +45,7 @@ CREATE TABLE COUNTRY(
 CREATE TABLE CITY(
     id INT NOT NULL AUTO_INCREMENT,
     name VARCHAR(60) NOT NULL,
-    postalCode INT NOT NULL,
+    postalCode INT NOT NULL CHECK (postalCode >= 0),
     country VARCHAR(50) NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (country) REFERENCES COUNTRY(name)
@@ -54,7 +54,7 @@ CREATE TABLE CITY(
 CREATE TABLE ADDRESS(
     id INT NOT NULL AUTO_INCREMENT,
     street VARCHAR(100) NOT NULL,
-    number INT NOT NULL,
+    number INT NOT NULL CHECK (number >= 0),
     city INT NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (city) REFERENCES CITY(id)
@@ -69,7 +69,7 @@ CREATE TABLE BUSINESS_ENTITY(
     isClient BOOLEAN NOT NULL,
     isSupplier BOOLEAN NOT NULL,
     registrationDate DATE,
-    creditLimit DECIMAL(5,2),
+    creditLimit DECIMAL(5,2) CHECK (creditLimit >= 0),
     hashedPassword VARCHAR(255),
     salt VARCHAR(5),
     PRIMARY KEY (id),
@@ -118,9 +118,9 @@ CREATE TABLE DOCUMENT(
     docStatus VARCHAR(32) NOT NULL,
     workflow INT NOT NULL,
     date DATE NOT NULL,
-    exclVATTotal DECIMAL(5,2) NOT NULL,
-    inclVATTotal DECIMAL(5,2) NOT NULL,
-    reminderCount INT,
+    exclVATTotal DECIMAL(5,2) NOT NULL CHECK (exclVATTotal >= 0),
+    inclVATTotal DECIMAL(5,2) NOT NULL CHECK (inclVATTotal >= 0),
+    reminderCount INT CHECK (reminderCount >= 0 && reminderCount <= 2),
     payementDeadline DATE,
     PRIMARY KEY (id,docType),
     FOREIGN KEY (docType) REFERENCES DOC_TYPE(code),
@@ -132,9 +132,9 @@ CREATE TABLE TRANSACTION_DETAIL(
     id INT NOT NULL AUTO_INCREMENT,
     document INT NOT NULL,
     docType VARCHAR(32) NOT NULL,
-    product INT NOT NULL,
-    quantity INT NOT NULL,
-    unitPrice DECIMAL(4,2) NOT NULL,
+    product INT NOT NULL CHECK (product >= 0),
+    quantity INT NOT NULL CHECK (quantity >= 0),
+    unitPrice DECIMAL(4,2) NOT NULL CHECK (unitPrice >= 0),
     PRIMARY KEY (id, document, docType),
     FOREIGN KEY (document, docType) REFERENCES DOCUMENT(id, docType),
     FOREIGN KEY (product) REFERENCES PRODUCT(id)
