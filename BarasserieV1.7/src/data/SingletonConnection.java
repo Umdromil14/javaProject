@@ -3,20 +3,31 @@ package data;
 import java.sql.*;
 import java.util.Properties;
 
+import exception.DataAccessException;
+
 public class SingletonConnection {
     private static Connection connection;
 
-    public static Connection getInstance() throws SQLException {
+    public static Connection getInstance() throws DataAccessException {
         if (connection == null) {
-            Properties properties = DBConfiguration.getInstance();
-            connection = DriverManager.getConnection(properties.getProperty("url"), properties.getProperty("user"), properties.getProperty("password"));
+            try {
+                Properties properties = DBConfiguration.getInstance();
+                connection = DriverManager.getConnection(properties.getProperty("url"), properties.getProperty("user"), properties.getProperty("password"));
+            } catch (SQLException e) {
+                throw new DataAccessException("Error connecting to the database");
+            }
+            
         }
         return connection;
     }
 
-    public static void close() throws SQLException {
+    public static void close() throws DataAccessException {
         if (connection != null) {
-            connection.close();
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                throw new DataAccessException("Error closing the connection");
+            }
         }
         connection = null;
     }

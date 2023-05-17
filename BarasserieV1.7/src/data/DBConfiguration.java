@@ -4,19 +4,20 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
+import exception.DataAccessException;
+
 public class DBConfiguration {
     private static final String CONFIG_FILE = "config.properties";
 
     private static Properties properties;
 
-    public static Properties getInstance() {
+    public static Properties getInstance() throws DataAccessException{
         if (properties == null) {
             properties = new Properties();
             try {
                 loadProperties();
             } catch (IOException e) {
-                System.err.println("Error while loading properties file");
-                System.exit(1);
+                throw new DataAccessException("Error loading properties file");
             }
         }
         return properties;

@@ -1,8 +1,8 @@
 package interfaces;
 
-import java.sql.SQLException;
+import exception.DataAccessException;
 import java.util.List;
 
 public interface DocStatusDataAccess {
-    public List<String> getAllDocStatus() throws SQLException;
+    public List<String> getAllDocStatus() throws DataAccessException;
 }

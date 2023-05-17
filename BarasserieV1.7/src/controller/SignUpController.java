@@ -2,7 +2,7 @@ package controller;
 
 import java.io.IOException;
 import java.net.URL;
-import java.sql.SQLException;
+
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -15,6 +15,7 @@ import business.AddressManager;
 import business.CommunicationManager;
 import business.UserManager;
 import exception.InvalidInputException;
+import exception.DataAccessException;
 import view.PopUp;
 
 
@@ -27,7 +28,7 @@ public class SignUpController implements Initializable {
     private List<String> cities;
     private List<Integer> postalCodes;
 
-    public SignUpController() throws SQLException {
+    public SignUpController() throws DataAccessException {
         popUp = new PopUp();
         userManager = new UserManager();
         addressManager = new AddressManager();
@@ -142,8 +143,8 @@ public class SignUpController implements Initializable {
             userManager.createUser(user);
             popUp.success("User successfully created");
             FXMLStage.getInstance().load("/view/adminProfile.fxml", "admin view");
-        } catch (SQLException e) {
-            popUp.warning("An error occured while trying to access the database");
+        } catch (DataAccessException e) {
+            popUp.warning(e.getMessage());
         } catch (IOException e) {
             popUp.warning("Error while loading the page");
         } catch (NumberFormatException | InvalidInputException e) {
@@ -159,8 +160,8 @@ public class SignUpController implements Initializable {
             cities = addressManager.getCity(comboBoxCountry.getValue());
             comboBoxCity.getItems().addAll(cities);
             comboBoxCity.setValue(cities.get(0));
-        } catch (SQLException e) {
-            popUp.warning("An error occured while trying to access the database");
+        } catch (DataAccessException e) {
+            popUp.warning(e.getMessage());
         }
     }
 
@@ -171,8 +172,8 @@ public class SignUpController implements Initializable {
         try {
             postalCodes = addressManager.getPostalCode(comboBoxCity.getValue());
             comboBoxPostalCode.getItems().addAll(postalCodes);
-        } catch (SQLException e) {
-            popUp.warning("An error occured while trying to access the database");
+        } catch (DataAccessException e) {
+            popUp.warning(e.getMessage());
         }
     }
 

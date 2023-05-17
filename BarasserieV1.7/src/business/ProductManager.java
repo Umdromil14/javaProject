@@ -1,7 +1,7 @@
 package business;
 
 import java.sql.Date;
-import java.sql.SQLException;
+import exception.DataAccessException;
 import java.util.List;
 
 import data.ProductDBAccess;
@@ -15,7 +15,7 @@ public class ProductManager {
         dao = new ProductDBAccess();
     }
 
-    public List<ProductProportion> getAllProductsQuantity(Date startDate, Date endDate) throws SQLException {
+    public List<ProductProportion> getAllProductsQuantity(Date startDate, Date endDate) throws DataAccessException {
         if (startDate.after(endDate)) {
             Date temp = startDate;
             startDate = endDate;

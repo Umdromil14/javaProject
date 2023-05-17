@@ -1,24 +1,24 @@
 package interfaces;
 
-import java.sql.SQLException;
 import java.util.List;
 
+import exception.DataAccessException;
 import model.*;
 
 public interface AddressDataAccess {
-    public TopProductCity getTopProduct(int cityId) throws SQLException;
+    public TopProductCity getTopProduct(int cityId) throws DataAccessException;
 
-    public List<City> getAllCities() throws SQLException;
+    public List<City> getAllCities() throws DataAccessException;
 
-    public List<String> getCountries() throws SQLException;
+    public List<String> getCountries() throws DataAccessException;
 
-    public List<Integer> getPostalCode(String city) throws SQLException;
+    public List<Integer> getPostalCode(String city) throws DataAccessException;
 
-    public List<String> getCity(String country) throws SQLException;
+    public List<String> getCity(String country) throws DataAccessException;
 
-    public void deleteAddress(Integer idAddress) throws SQLException;
+    public void deleteAddress(Integer idAddress) throws DataAccessException;
 
-    public Integer getAddress(Address address) throws SQLException;
+    public Integer getAddress(Address address) throws DataAccessException;
     
-    public Integer addAddress(Address address) throws SQLException ;
+    public Integer addAddress(Address address) throws DataAccessException ;
 }

@@ -4,6 +4,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import exception.DataAccessException;
 import interfaces.DocStatusDataAccess;
 
 
@@ -11,12 +12,12 @@ public class DocStatusDBAccess implements DocStatusDataAccess {
     private Connection connection;
     
     @Override
-    public List<String> getAllDocStatus() throws SQLException {
+    public List<String> getAllDocStatus() throws DataAccessException {
         List<String> docStatus = new ArrayList<>();
 
         String query = "SELECT description FROM doc_status";
-
-        connection = SingletonConnection.getInstance();
+        try {
+            connection = SingletonConnection.getInstance();
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
 
@@ -26,6 +27,10 @@ public class DocStatusDBAccess implements DocStatusDataAccess {
                 }
             }
         }
+        } catch (SQLException e) {
+            throw new DataAccessException("error while loading the document status");
+        }
+        
         return docStatus;
     }
 }

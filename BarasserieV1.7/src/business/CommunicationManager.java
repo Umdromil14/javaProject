@@ -1,6 +1,6 @@
 package business;
 
-import java.sql.SQLException;
+import exception.DataAccessException;
 
 import data.CommunicationDBAccess;
 import interfaces.CommunicationDataAccess;
@@ -12,7 +12,7 @@ public class CommunicationManager {
         dao = new CommunicationDBAccess();
     }
 
-    public boolean isMailAlreadyUsed(String email) throws SQLException {
+    public boolean isMailAlreadyUsed(String email) throws DataAccessException {
         return dao.isMailAlreadyUsed(email);
     }
     

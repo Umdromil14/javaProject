@@ -1,6 +1,6 @@
 package business;
 
-import java.sql.SQLException;
+import exception.DataAccessException;
 import java.util.List;
 
 import data.DocStatusDBAccess;
@@ -13,7 +13,7 @@ public class DocStatusManager {
         this.dao = new DocStatusDBAccess();
     }
 
-    public List<String> getAllDocStatus() throws SQLException {
+    public List<String> getAllDocStatus() throws DataAccessException {
         return dao.getAllDocStatus();
     }
 }

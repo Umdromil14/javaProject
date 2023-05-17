@@ -2,50 +2,65 @@ package data;
 
 import java.sql.*;
 
+import exception.DataAccessException;
 import interfaces.CommunicationDataAccess;
 
 public class CommunicationDBAccess implements CommunicationDataAccess {
     Connection connection;
 
     @Override
-    public boolean isMailAlreadyUsed(String email) throws SQLException {
+    public boolean isMailAlreadyUsed(String email) throws DataAccessException {
         String query = "SELECT communicationDetails FROM communication WHERE communicationDetails = ?";
+        try {
+            connection = SingletonConnection.getInstance();
 
-        connection = SingletonConnection.getInstance();
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setString(1, email);
 
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, email);
-
-            try(ResultSet result = statement.executeQuery()) {
-                return result.next();
+                try (ResultSet result = statement.executeQuery()) {
+                    return result.next();
+                }
             }
+        } catch (SQLException e) {
+            throw new DataAccessException("error while accessing the email");
         }
+
     }
 
     @Override
-    public void addEmail(int id, String email) throws SQLException {
+    public void addEmail(int id, String email) throws DataAccessException {
         String query = "INSERT INTO communication (entity, type, communicationDetails) VALUES (?, ?, ?)";
 
-        connection = SingletonConnection.getInstance();
+        try {
+            connection = SingletonConnection.getInstance();
 
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setInt(1, id);
-            statement.setString(2, "email");
-            statement.setString(3, email);
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setInt(1, id);
+                statement.setString(2, "email");
+                statement.setString(3, email);
 
-            statement.executeUpdate();
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException("error while adding the email");
         }
+
     }
 
     @Override
-    public void deleteEmail(Integer clientId) throws SQLException {
-        connection = SingletonConnection.getInstance();
+    public void deleteEmail(Integer clientId) throws DataAccessException {
+        try {
+            connection = SingletonConnection.getInstance();
 
-        String query = "DElETE FROM communication WHERE entity = ? AND type = 'email'";
-            
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setInt(1, clientId);
-            statement.executeUpdate();
+            String query = "DElETE FROM communication WHERE entity = ? AND type = 'email'";
+
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setInt(1, clientId);
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException("error while deleting the email");
         }
+
     }
 }

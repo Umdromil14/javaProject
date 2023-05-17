@@ -1,7 +1,7 @@
 package controller;
 
 import java.io.IOException;
-import java.sql.SQLException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +12,7 @@ import model.User;
 import business.AddressManager;
 import business.CommunicationManager;
 import business.UserManager;
+import exception.DataAccessException;
 import exception.InvalidInputException;
 import view.PopUp;
 
@@ -78,8 +79,8 @@ public class ModificationController {
             comboBoxCity.getItems().addAll(addressManager.getCity(user.getAddress().getCity().getCountry()));
             comboBoxPostalCode.getItems().addAll(addressManager.getPostalCode(user.getAddress().getCity().getPostalCode().toString()));
             comboBoxCountry.getItems().addAll(addressManager.getCountries());    
-        } catch (SQLException e) {
-            popUp.warning("An error occured while trying to access the database");
+        } catch (DataAccessException e) {
+            popUp.warning(e.getMessage());
         }
         comboBoxCity.setValue(user.getAddress().getCity().getName());
         comboBoxCountry.setValue(user.getAddress().getCity().getCountry());
@@ -151,8 +152,8 @@ public class ModificationController {
 
             popUp.success("User successfully updated");
             FXMLStage.getInstance().load("/view/adminProfile.fxml","admin view");
-        } catch (SQLException e) {
-            popUp.warning("An error occured while trying to access the database");
+        } catch (DataAccessException e) {
+            popUp.warning(e.getMessage());
         } catch (NumberFormatException | InvalidInputException e) {
             popUp.warning("The number must be a positive integer");
         } catch(IOException e) {
@@ -168,8 +169,8 @@ public class ModificationController {
         try {
             postalCodes = addressManager.getPostalCode(comboBoxCity.getValue());
             comboBoxPostalCode.getItems().addAll(postalCodes);
-        } catch (SQLException e) {
-            popUp.warning("An error occured while trying to access the database");
+        } catch (DataAccessException e) {
+            popUp.warning(e.getMessage());
         }
     }
 
@@ -181,8 +182,8 @@ public class ModificationController {
             cities = addressManager.getCity(comboBoxCountry.getValue());
             comboBoxCity.getItems().addAll(cities);
             comboBoxCity.setValue(cities.get(0));
-        } catch (SQLException e) {
-            popUp.warning("An error occured while trying to access the database");
+        } catch (DataAccessException e) {
+            popUp.warning(e.getMessage());
         }
     }
 

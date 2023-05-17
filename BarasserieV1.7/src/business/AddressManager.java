@@ -1,6 +1,6 @@
 package business;
 
-import java.sql.SQLException;
+import exception.DataAccessException;
 import java.util.List;
 
 import data.AddressDBAccess;
@@ -15,23 +15,23 @@ public class AddressManager {
         this.dao = new AddressDBAccess();
     }
 
-    public List<City> getAllCities() throws SQLException {
+    public List<City> getAllCities() throws DataAccessException {
         return dao.getAllCities();
     }
 
-    public TopProductCity getTopProduct(int cityId) throws SQLException {
+    public TopProductCity getTopProduct(int cityId) throws DataAccessException {
         return dao.getTopProduct(cityId);
     }
 
-    public List<String> getCountries() throws SQLException {
+    public List<String> getCountries() throws DataAccessException {
         return dao.getCountries();
     }
 
-    public List<Integer> getPostalCode(String city) throws SQLException {
+    public List<Integer> getPostalCode(String city) throws DataAccessException {
         return dao.getPostalCode(city);
     }
 
-    public List<String> getCity(String country) throws SQLException {
+    public List<String> getCity(String country) throws DataAccessException {
         return dao.getCity(country);
     }
 }

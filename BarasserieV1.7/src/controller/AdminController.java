@@ -15,14 +15,13 @@ import model.*;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Date;
-import java.sql.SQLException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
 import business.*;
-import exception.InvalidInputException;
-import exception.UserRestrictedException;
+import exception.*;
 import tools.enumeration.Execution;
 import view.PopUp;
 
@@ -144,8 +143,8 @@ public class AdminController implements Initializable {
         try {
             List<String> docStatus = docStatusManager.getAllDocStatus();
             parameterComboBox.setItems(FXCollections.observableArrayList(docStatus));
-        } catch (SQLException e) {
-            popUp.warning("An error occured while trying to access the database");
+        } catch (DataAccessException e) {
+            popUp.warning(e.getMessage());
         }
     }
 
@@ -220,8 +219,8 @@ public class AdminController implements Initializable {
                 setTableItems(FXCollections.observableArrayList(user.toTableEntry()));
                 setColumnsNames(Execution.USER.getOutputs());
             }
-        } catch (SQLException e) {
-            popUp.warning("An error occured while trying to access the database");
+        } catch (DataAccessException e) {
+            popUp.warning(e.getMessage());
         }
     }
 
@@ -240,8 +239,8 @@ public class AdminController implements Initializable {
             } else {
                 FXMLStage.getInstance().load("/view/modificationUser.fxml", "Modification", user);
             }
-        } catch (SQLException e) {
-            popUp.warning("An error occured while trying to access the database");
+        } catch (DataAccessException e) {
+            popUp.warning(e.getMessage());
         } catch (IOException e) {
             popUp.warning("An error occured while loading the modification page");
         }
@@ -265,8 +264,8 @@ public class AdminController implements Initializable {
                     userManager.deleteUser(user);
                     researchUsers(event);
                 }
-            } catch (SQLException e) {
-                popUp.warning("An error occured while trying to access the database");
+            } catch (DataAccessException e) {
+                popUp.warning(e.getMessage());
             } catch (UserRestrictedException e){
                 popUp.warning(e.getMessage());
             }
@@ -310,8 +309,8 @@ public class AdminController implements Initializable {
                 default:
                     break;
             }
-        } catch (SQLException e) {
-            popUp.warning("An error occured while trying to access the database");
+        } catch (DataAccessException e) {
+            popUp.warning(e.getMessage());
         }
     }
 
@@ -330,8 +329,8 @@ public class AdminController implements Initializable {
             setTableItems(FXCollections.observableArrayList(tableEntries));
             setColumnsNames(currentExecution.getOutputs());
             setButtons(true, true, true, true, false);
-        } catch (SQLException e) {
-            popUp.warning("An error occured while trying to access the database");
+        } catch (DataAccessException e) {
+            popUp.warning(e.getMessage());
         }
     }
 
@@ -350,8 +349,8 @@ public class AdminController implements Initializable {
             setTableItems(FXCollections.observableArrayList(tableEntries));
             setColumnsNames(currentExecution.getOutputs());
             setButtons(false, false, false, false, false);
-        } catch (SQLException e) {
-            popUp.warning("An error occured while trying to access the database");
+        } catch (DataAccessException e) {
+            popUp.warning(e.getMessage());
             
         }
     }
@@ -442,8 +441,8 @@ public class AdminController implements Initializable {
             setColumnsNames(Execution.INVOICE.getOutputs());
             description.setText(Execution.INVOICE.getDescription());
             setButtons();
-        } catch (SQLException e) {
-            popUp.warning("An error occured while trying to access the database");
+        } catch (DataAccessException e) {
+            popUp.warning(e.getMessage());
         }
     }
 
@@ -470,7 +469,7 @@ public class AdminController implements Initializable {
             setColumnsNames(Execution.PRODUCT_PROPORTION.getOutputs());
             description.setText(Execution.PRODUCT_PROPORTION.getDescription());
             setButtons();
-        } catch (SQLException e) {
+        } catch (DataAccessException e) {
             popUp.warning("An error occured while trying to access the database");
         }
     }
