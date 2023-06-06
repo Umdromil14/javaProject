@@ -147,6 +147,8 @@ insert into country (name) values ('Netherlands');
 insert into country (name) values ('Luxembourg');
 
 insert into city (name,postalCode,country) values ('Brussels',1000,'Belgium');
+insert into city (name,postalCode,country) values ('Brussels',1020,'Belgium');
+insert into city (name,postalCode,country) values ('Brussels',1210,'Belgium');
 insert into city (name,postalCode,country) values ('Antwerp', 2000,"Belgium");
 insert into city (name,postalCode,country) values ('Charleroi', 6000, "Belgium");
 insert into city (name,postalCode,country) values ('Liège', 4000,"Belgium");
@@ -158,6 +160,8 @@ insert into city (name,postalCode,country) values ('Anderlecht', 1070,"Belgium")
 insert into city (name,postalCode,country) values ('Hasselt', 3500,"Belgium");
 
 insert into city (name,postalCode,country) values ('Paris', 75000,"France");
+insert into city (name,postalCode,country) values ('Paris', 70123,"France");
+insert into city (name,postalCode,country) values ('Paris', 75003,"France");
 insert into city (name,postalCode,country) values ('Marseille', 13000,"France");
 insert into city (name,postalCode,country) values ('Lyon', 69000,"France");
 insert into city (name,postalCode,country) values ('Toulouse', 31000,"France");
@@ -169,6 +173,8 @@ insert into city (name,postalCode,country) values ('Bordeaux', 33000,"France");
 insert into city (name,postalCode,country) values ('Lille', 59000,"France");
 
 insert into city (name,postalCode,country) values ('Berlin', 10115,"Germany");
+insert into city (name,postalCode,country) values ('Berlin', 10117,"Germany");
+insert into city (name,postalCode,country) values ('Berlin', 10178,"Germany");
 insert into city (name,postalCode,country) values ('Hamburg', 20095,"Germany");
 insert into city (name,postalCode,country) values ('Munich', 80331,"Germany");
 insert into city (name,postalCode,country) values ('Cologne', 50667,"Germany");
@@ -180,6 +186,8 @@ insert into city (name,postalCode,country) values ('Essen', 45127,"Germany");
 insert into city (name,postalCode,country) values ('Leipzig', 4109,"Germany");
 
 insert into city (name,postalCode,country) values ('Amsterdam', 1012,"Netherlands");
+insert into city (name,postalCode,country) values ('Amsterdam', 1011,"Netherlands");
+insert into city (name,postalCode,country) values ('Amsterdam', 1013,"Netherlands");
 insert into city (name,postalCode,country) values ('Rotterdam', 3011,"Netherlands");
 insert into city (name,postalCode,country) values ('The Hague', 2511,"Netherlands");
 insert into city (name,postalCode,country) values ('Utrecht', 3511,"Netherlands");
@@ -190,7 +198,9 @@ insert into city (name,postalCode,country) values ('Almere', 1315,"Netherlands")
 insert into city (name,postalCode,country) values ('Breda', 4811,"Netherlands");
 insert into city (name,postalCode,country) values ('Nijmegen', 6511,"Netherlands");
 
-insert into city (name,postalCode,country) values ('Luxembourg', 1012,"Luxembourg");
+insert into city (name,postalCode,country) values ('Luxembourg', 1111,"Luxembourg");
+insert into city (name,postalCode,country) values ('Luxembourg', 1112,"Luxembourg");
+insert into city (name,postalCode,country) values ('Luxembourg', 1113,"Luxembourg");
 insert into city (name,postalCode,country) values ('Esch-sur-Alzette', 3011,"Luxembourg");
 insert into city (name,postalCode,country) values ('Differdange', 2511,"Luxembourg");
 insert into city (name,postalCode,country) values ('Dudelange', 3511,"Luxembourg");
